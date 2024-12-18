@@ -1,5 +1,24 @@
 <script>
     export let name = "stranger";
+    import TiptapEditor, { useTiptapEditor } from "$components/features/TiptapEditor";
+    const [editorProps, editorActions] = useTiptapEditor();
+    console.log(editorProps, editorActions.isActive());
+    const handleCreate = (props) => {
+        if (editorProps && typeof editorProps.onCreate === "function") {
+            editorProps.onCreate(props);
+        }
+    };
+
+    const handleDestroy = () => {
+        if (editorProps && typeof editorProps.onDestroy === "function") {
+            editorProps.onDestroy();
+        }
+    };
+
+    const handleClick = () => {
+        console.log("test");
+        console.log(editorProps, editorActions.isActive(), editorActions.getHTML());
+    };
 </script>
 
 <main>
@@ -8,6 +27,7 @@
         Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a>
         to learn how to build Svelte apps.
     </p>
+    <TiptapEditor className="focus-within:outline-none" onCreate={handleCreate} onDestory={handleDestroy} />
 </main>
 
 <style>
