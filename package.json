@@ -43,6 +43,9 @@
         "@tiptap/extension-text-align": "^2.10.3",
         "@tiptap/extension-text-style": "^2.10.3",
         "@tiptap/extension-underline": "^2.10.3",
-        "@tiptap/pm": "2.10.3"
+        "@tiptap/pm": "2.10.3",
+        "flowbite": "^2.5.2",
+        "flowbite-svelte": "^0.47.4",
+        "flowbite-svelte-icons": "^2.0.2"
     }
 }
