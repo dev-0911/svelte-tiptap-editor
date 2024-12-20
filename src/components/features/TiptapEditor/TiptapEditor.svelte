@@ -1,7 +1,9 @@
 <script>
+    import cn from "classnames";
     import { onMount as onComponentMount, onDestroy as onComponentDestroy } from "svelte";
     import { Editor } from "@tiptap/core";
     import useExtensions from "./extensions/useExtensions";
+    import Toolbar from "./toolbars/Toolbar.svelte";
 
     export let onCreate;
     export let onDestroy;
@@ -73,8 +75,10 @@
     });
 </script>
 
-{#if editor}
-    toolbar
-{/if}
+<div class="w-screen h-screen flex flex-col overflow-hidden bg-background border border-border-toolbar text-text">
+    {#if editor}
+        <Toolbar className="flex-0 w-full bg-background-toolbar border-b border-b-border-toolbar" {editor} />
+    {/if}
 
-<div class={className} bind:this={element}></div>
+    <div class={cn(className, "flex-1 px-3 py-2  ")} bind:this={element}></div>
+</div>

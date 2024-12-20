@@ -23,6 +23,10 @@ import BubbleMenu from "@tiptap/extension-bubble-menu";
 import Link from "@tiptap/extension-link";
 import OrderedList from "@tiptap/extension-ordered-list";
 import BulletList from "@tiptap/extension-bullet-list";
+import TaskList from "@tiptap/extension-task-list";
+import TaskItem from "@tiptap/extension-task-item";
+import CustomOrderedList from "./CustomOrderList";
+import CustomBulletList from "./CustomBulletList";
 
 const useExtensions = () => {
     return [
@@ -50,11 +54,13 @@ const useExtensions = () => {
         }),
         Subscript,
         Superscript,
-        OrderedList,
-        // CustomOrderedList,
-        BulletList,
-        // CustomBulletList,
+        // OrderedList,
+        CustomOrderedList,
+        // BulletList,
+        CustomBulletList,
         ListItem,
+        TaskList,
+        TaskItem,
         BubbleMenu.configure({
             shouldShow: ({ editor, view, state, oldState, from, to }) => {
                 return editor.isActive("image") || editor.isActive("link");
