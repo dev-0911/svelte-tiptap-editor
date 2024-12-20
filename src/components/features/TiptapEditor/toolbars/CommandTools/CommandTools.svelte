@@ -10,9 +10,9 @@
 
 <div class="flex justify-start items-center gap-1">
     <Button class="p-1 bg-background-toolbar hover:bg-background-toolbar-hovered rounded-sm" disabled={isUndoDisabled} on:click={() => editor?.chain().focus().undo().run()}>
-        <CmdUndoIcon width="18px" height="18px" className="fill-text-toolbar" />
+        <CmdUndoIcon width="18px" height="18px" className={isUndoDisabled ? "fill-text-toolbar" : "fill-text-toolbar-selected"} />
     </Button>
     <Button class="p-1 bg-background-toolbar hover:bg-background-toolbar-hovered rounded-sm" disabled={isRedoDisabled} on:click={() => editor?.chain().focus().redo().run()}>
-        <CmdRedoIcon width="18px" height="18px" className="fill-text-toolbar" />
+        <CmdRedoIcon width="18px" height="18px" className={isUndoDisabled ? "fill-text-toolbar" : "fill-text-toolbar-selected"} />
     </Button>
 </div>

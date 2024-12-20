@@ -6,7 +6,7 @@
     import CommandTools from "./CommandTools/CommandTools.svelte";
     import FormattingTools from "./FormattingTools/FormattingTools.svelte";
     import IndentTools from "./IndentTools/IndentTools.svelte";
-    // import FontTools from "./FormattingTools/FormattingTools.svelte";
+    import FontTools from "./FontTools/FontTools.svelte";
     import StyleTools from "./StyleTools/StyleTools.svelte";
 
     export let editor;
@@ -18,6 +18,8 @@
         <AiTools {editor} />
         <Divider />
         <CommandTools {editor} />
+        <Divider />
+        <FontTools {editor} />
         <Divider />
         <FormattingTools {editor} />
         <Divider />

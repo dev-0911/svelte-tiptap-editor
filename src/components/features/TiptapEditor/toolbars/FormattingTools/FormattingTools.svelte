@@ -51,7 +51,7 @@
     };
 </script>
 
-<Button class="px-2.5 py-1 min-w-40 flex justify-start items-center gap-2 bg-background-toolbar hover:bg-background-toolbar-hovered text-text-toolbar text-left rounded-sm">
+<Button class="p-1 min-w-40 flex justify-start items-center gap-2 bg-background-toolbar hover:bg-background-toolbar-hovered text-text-toolbar text-left rounded-sm">
     {#if isActiveHeading1}
         <FormattingH1Icon width="16px" height="16px" className="fill-text-toolbar" />
         <span class="flex-1">Heading 1</span>
