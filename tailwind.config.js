@@ -11,6 +11,8 @@ export default {
         },
         extend: {
             colors: {
+                primary: "var(--primary)",
+
                 background: {
                     DEFAULT: "var(--background-color-main)",
                     hovered: "var(--background-color-main-hovered)",

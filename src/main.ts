@@ -1,5 +1,6 @@
 import { mount } from "svelte";
 import "./styles/global.css";
+import "./styles/tippy.css";
 import "./styles/tiptap.css";
 
 import App from "./App.svelte";

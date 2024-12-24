@@ -60,7 +60,9 @@
 
 <div class="min-w-32">
     <Button class="p-1 w-full flex justify-start items-center gap-2 bg-background-toolbar hover:bg-background-toolbar-hovered text-text-toolbar text-left rounded-sm">
-        <FontFamilyIcon width="16px" height="16px" className="fill-text-toolbar" />
+        <div class="flex-0">
+            <FontFamilyIcon width="16px" height="16px" className="fill-text-toolbar" />
+        </div>
         <span class="flex-1">{selectedFamily?.name || "Default"}</span>
         <ChevronDownIcon width="16px" height="16px" className="fill-text-toolbar" />
     </Button>
@@ -76,7 +78,9 @@
 
 <div class="min-w-10">
     <Button class="p-1 min-w-10 w-full flex justify-start items-center gap-2 bg-background-toolbar hover:bg-background-toolbar-hovered text-text-toolbar text-left rounded-sm">
-        <FontSizeIcon width="16px" height="16px" className="fill-text-toolbar" />
+        <div class="flex-0">
+            <FontSizeIcon width="16px" height="16px" className="fill-text-toolbar" />
+        </div>
         <span class="flex-1">{selectedSize?.name}</span>
         <ChevronDownIcon width="16px" height="16px" className="fill-text-toolbar" />
     </Button>

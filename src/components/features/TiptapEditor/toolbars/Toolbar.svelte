@@ -11,11 +11,13 @@
 
     export let editor;
     export let className;
+    export let onAdd;
+    export let onReplace;
 </script>
 
-<div class={cn(className, "flex justify-start items-center")}>
-    <div class={cn("p-2.5 flex justify-start items-center gap-2 bg-background-toolbar text-text-toolbar")}>
-        <AiTools {editor} />
+<div id="toolbar" class={cn(className, "flex justify-center items-center")}>
+    <div class={cn("w-full p-2.5 flex justify-start items-center gap-2 bg-background-toolbar text-text-toolbar")}>
+        <AiTools {editor} {onReplace} {onAdd} />
         <Divider />
         <CommandTools {editor} />
         <Divider />
@@ -28,6 +30,18 @@
         <AlignTools {editor} />
         <Divider />
         <IndentTools {editor} />
-        <!-- <FontTools {editor} /> -->
+        <!-- <FloatingMenu
+            {editor}
+            shouldShow={onShow}
+            className="w-full"
+            tippyOptions={{
+                appendTo: document.getElementById("PORTAL-ROOT"),
+                theme: "custom",
+                placement: "bottom-start",
+                arrow: false,
+                hideOnClick: false,
+                maxWidth: "none",
+                sticky: true,
+            }} /> -->
     </div>
 </div>

@@ -1,27 +1,11 @@
 <script>
-    import TiptapEditor, { useTiptapEditor } from "$components/features/TiptapEditor";
-    const [editorProps, editorActions] = useTiptapEditor();
-    console.log(editorProps, editorActions.isActive());
-    const handleCreate = (props) => {
-        if (editorProps && typeof editorProps.onCreate === "function") {
-            editorProps.onCreate(props);
-        }
-    };
-
-    const handleDestroy = () => {
-        if (editorProps && typeof editorProps.onDestroy === "function") {
-            editorProps.onDestroy();
-        }
-    };
-
-    const handleClick = () => {
-        console.log("test");
-        console.log(editorProps, editorActions.isActive(), editorActions.getHTML());
-    };
+    import TiptapEditor from "$components/features/TiptapEditor";
 </script>
 
-<main>
-    <TiptapEditor className="focus-within:outline-none" onCreate={handleCreate} onDestory={handleDestroy} />
+<main class="bg-background relative">
+    <TiptapEditor className="relative z-10 focus-within:outline-none" />
+
+    <div id="PORTAL-ROOT" class="absolute z-20 top-0 left-0 w-full floating-panel"></div>
 </main>
 
 <style>

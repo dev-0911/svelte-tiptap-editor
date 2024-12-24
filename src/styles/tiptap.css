@@ -7,39 +7,34 @@
 
     /* Heading styles */
     h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-        line-height: 1.1;
-        margin-top: 0.25rem;
-        margin-bottom: 0.5rem;
-        text-wrap: pretty;
-    }
-
-    h1,
     h2 {
-        margin-top: 0.25rem;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.9rem;
     }
 
     h1 {
-        font-size: 1.4rem;
+        padding-top: 1.8rem;
+        font-size: 2.3rem;
+        margin-bottom: 0.9rem;
     }
 
     h2 {
-        font-size: 1.2rem;
+        padding-top: 1.5rem;
+        font-size: 1.8rem;
+        margin-bottom: 0.7rem;
     }
 
     h3 {
-        font-size: 1.1rem;
+        padding-top: 1rem;
+        font-size: 1.5rem;
+        margin-bottom: 0.6rem;
     }
 
     h4,
     h5,
     h6 {
+        padding-top: 0.85rem;
         font-size: 1rem;
+        margin-bottom: 0.4rem;
     }
 
     /* List styles. */
