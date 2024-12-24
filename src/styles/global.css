@@ -1,0 +1,117 @@
+/** Import tailwind. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --background-color-main: #0e363e;
+    --background-color-main-hovered: #000000;
+    --background-color-main-focused: #000000;
+    --background-color-main-selected: #000000;
+    --background-color-main-disabled: #000000;
+    --background-color-toolbar: #09323a;
+    --background-color-toolbar-hovered: #ffffff33;
+    --background-color-toolbar-focused: #000000;
+    --background-color-toolbar-selected: #000000;
+    --background-color-toolbar-disabled: #000000;
+    --text-color-main: #ffffff;
+    --text-color-main-hovered: #ffffff;
+    --text-color-main-focused: #ffffff;
+    --text-color-main-selected: #ffffff;
+    --text-color-main-disabled: #ffffff;
+    --text-color-toolbar: #6d868a;
+    --text-color-toolbar-hovered: #ffffff;
+    --text-color-toolbar-focused: #ffffff;
+    --text-color-toolbar-selected: #ffffff;
+    --text-color-toolbar-disabled: #ffffff;
+    --border-color-main: #ffffff;
+    --border-color-main-hovered: #ffffff;
+    --border-color-main-focused: #ffffff;
+    --border-color-main-selected: #ffffff;
+    --border-color-main-disabled: #ffffff;
+    --border-color-toolbar: #224349;
+    --border-color-toolbar-hovered: #ffffff;
+    --border-color-toolbar-focused: #ffffff;
+    --border-color-toolbar-selected: #ffffff;
+    --border-color-toolbar-disabled: #ffffff;
+
+    /* --border-green: 3px solid #05d677;
+
+    --loading-background: #607a80 !important;
+    --loading-background-2: #082c33 !important;
+    --hover-message-menu: #09323ac7;
+    --empty-state: #09323a10;
+    --empty-state-2: #09323a;
+    --background-color-basic: #082c33;
+    --background-button-invert: #ffffffde;
+    --background-color-basic-1: #09323a;
+    --background-card: rgba(255, 255, 255, 0.05);
+    --background-story-color: #22474e;
+    --background-modal-1: #09323ab3;
+    --background-modal-2: #22474e;
+    --background-color-elevation-0: #082c33;
+    --background-color-elevation-1: #09323a;
+    --background-color-elevation-2: #092e35;
+    --background-color-elevation-3: #0e363e;
+    --background-color-elevation-4: rgba(255, 255, 255, 0.05);
+    --background-color-elevation-5: #183f46;
+    --background-color-icon: rgba(255, 255, 255, 0.1);
+    --background-hover-color-dashboard: #2c4e55;
+    --background-color-input: #082c33;
+    --text-color-main: #6d868a;
+    --text-color-secondary: #6a8388;
+    --text-color-terciary: #788f93;
+    --text-color-terciary-1: #788f9380;
+    --text-color-fourth: #ffffff99;
+    --text-color-fifth: #ffffff50;
+    --text-color-messages-send: rgba(255, 255, 255, 0.05);
+    --text-color-dark: #ffffff;
+    --border-color-primary: #224349;
+    --border-color-secondary: #224349;
+    --border-color-terciary: #224349;
+    --border-story-color: #22474e;
+    --hover-background-features: #ffffff33;
+    --hover-background-features-light: #ffffff10;
+    --hover-background-features-task: #1a4048;
+    --hover-level-1: rgba(255, 255, 255, 0.05);
+    --hover-level-2: #6a8388;
+    --hover-task-widget: rgba(255, 255, 255, 0.05);
+    --shadow-primary: none;
+    --shadow-terciary: 0px 0px 0px 10000px #09272ab3;
+    --shadow-selector: none;
+    --shadow-popup: 0px 0px 25px 0 #09272ab3;
+    --gradient-color: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, #163c44 75%);
+    --gradient-color-1: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #163c44 75%);
+    --filter-images: invert(1) hue-rotate(180deg);
+    --filter-images-2: brightness(0.7);
+    --filter-images-3: brightness(0.9);
+    --filter-images-4: invert(80%);
+    --filter-images-5: invert(30%);
+    --filter-images-op: opacity(20%);
+    --filter-logo: invert(1);
+    --filter-images-arrow: none;
+    --ai-background-color-basic: #082c33;
+    --ai-background-color-basic-1: #09323a;
+    --ai-background-color-elevation-0: #082c33;
+    --ai-background-color-elevation-1: #09323a;
+    --ai-background-color-elevation-2: #092e35;
+    --ai-background-color-elevation-3: #0e363e;
+    --ai-background-color-elevation-4: rgba(255, 255, 255, 0.05);
+    --ai-background-hover-color-dashboard: #2c4e55;
+    --ai-text-color-main: #6d868a;
+    --ai-text-color-secondary: #6a8388;
+    --ai-text-color-terciary: #788f93;
+    --ai-text-color-fourth: #ffffff99;
+    --ai-text-color-messages-send: #09323a;
+    --ai-border-color-primary: #224349;
+    --ai-background-card: rgba(255, 255, 255, 0.05);
+    --ai-background-modal-1: #09323ab3;
+    --ai-background-modal-2: #22474e; */
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: #0a0a0a;
+        --foreground: #ededed;
+    }
+}
