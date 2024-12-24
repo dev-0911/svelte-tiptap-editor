@@ -67,6 +67,31 @@ export const useTiptapEditor = () => {
             }
             return content;
         },
+        replaceWithText: (text: string) => {
+            if (tiptapEditorStore) {
+                tiptapEditorStore.subscribe((editor) => {
+                    if (editor) {
+                        editor.commands.deleteSelection(); // Delete the selected text
+                        editor.commands.insertContent(text); // Insert new text
+                    }
+                });
+            }
+        },
+        addWithText: (text: string) => {
+            if (tiptapEditorStore) {
+                tiptapEditorStore.subscribe((editor) => {
+                    if (editor) {
+                        const { from, to } = editor.state.selection;
+                        // Move the cursor to the end of the selected text
+                        editor.commands.setTextSelection(to);
+                        // Execute a new line to insert below the selected text
+                        editor.commands.insertContent("<p>" + text + "</p>");
+                        // Optionally, move the selection to the end of the inserted text
+                        editor.commands.setTextSelection(to + text.length + 7); // 7 accounts for <p></p> tags
+                    }
+                });
+            }
+        },
     };
 
     return [tiptapProps, tiptapActions];

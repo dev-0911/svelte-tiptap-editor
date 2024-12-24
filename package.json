@@ -24,6 +24,8 @@
         "vite": "^6.0.3"
     },
     "dependencies": {
+        "@floating-ui/core": "^1.6.8",
+        "@skeletonlabs/floating-ui-svelte": "^0.3.1",
         "@tiptap/core": "^2.10.3",
         "@tiptap/extension-bold": "^2.10.3",
         "@tiptap/extension-bubble-menu": "^2.10.3",
@@ -32,6 +34,7 @@
         "@tiptap/extension-code-block": "^2.10.3",
         "@tiptap/extension-color": "^2.10.3",
         "@tiptap/extension-document": "^2.10.3",
+        "@tiptap/extension-floating-menu": "^2.10.4",
         "@tiptap/extension-font-family": "^2.10.3",
         "@tiptap/extension-heading": "^2.10.3",
         "@tiptap/extension-highlight": "^2.10.3",
@@ -55,7 +58,9 @@
         "flowbite": "^2.5.2",
         "flowbite-svelte": "^0.47.4",
         "flowbite-svelte-icons": "^2.0.2",
+        "openai": "^4.77.0",
         "path": "^0.12.7",
+        "svelte-floating-ui": "^1.5.9",
         "tiptap-extension-font-size": "^1.2.0"
     }
 }

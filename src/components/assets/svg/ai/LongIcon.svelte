@@ -1,0 +1,13 @@
+<script>
+    export let className;
+    export let color = "currentColor"; // default color
+    export let width = "20"; // default width
+    export let height = "20"; // default height
+</script>
+
+<svg viewBox="0 0 24 24" {width} {height} fill={color} class={className}>
+
+    <path fill-rule="evenodd"
+        d="M3 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 5.25Zm0 4.5A.75.75 0 0 1 3.75 9h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 9.75Zm0 4.5a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Zm0 4.5a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z"
+        clip-rule="evenodd"></path>
+</svg>

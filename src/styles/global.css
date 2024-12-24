@@ -3,19 +3,47 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+    .scrollbar {
+        scrollbar-width: thin;
+    }
+
+    .scrollbar::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+    }
+
+    .scrollbar::-webkit-scrollbar-track {
+        /* border-radius: 100vh; */
+        background: #474752;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+        background: #f8f8f8;
+        /* border-radius: 100vh; */
+        border: 3px solid #f6f7ed;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #c0a0b9;
+    }
+}
+
 :root {
-    --background-color-main: #0e363e;
-    --background-color-main-hovered: #000000;
+    --primary: #2d97f3;
+    --background-color-main: #ffffff;
+    /* #0e363e; */
+    --background-color-main-hovered: #f3f4f6;
     --background-color-main-focused: #000000;
     --background-color-main-selected: #000000;
     --background-color-main-disabled: #000000;
     --background-color-toolbar: #09323a;
     --background-color-toolbar-hovered: #ffffff33;
-    --background-color-toolbar-focused: #000000;
-    --background-color-toolbar-selected: #000000;
+    --background-color-toolbar-focused: #57acf5;
+    --background-color-toolbar-selected: #81c1f8;
     --background-color-toolbar-disabled: #000000;
-    --text-color-main: #ffffff;
-    --text-color-main-hovered: #ffffff;
+    --text-color-main: #09090b;
+    --text-color-main-hovered: #09090b;
     --text-color-main-focused: #ffffff;
     --text-color-main-selected: #ffffff;
     --text-color-main-disabled: #ffffff;
@@ -24,7 +52,7 @@
     --text-color-toolbar-focused: #ffffff;
     --text-color-toolbar-selected: #ffffff;
     --text-color-toolbar-disabled: #ffffff;
-    --border-color-main: #ffffff;
+    --border-color-main: #e4e4e4;
     --border-color-main-hovered: #ffffff;
     --border-color-main-focused: #ffffff;
     --border-color-main-selected: #ffffff;
@@ -36,7 +64,6 @@
     --border-color-toolbar-disabled: #ffffff;
 
     /* --border-green: 3px solid #05d677;
-
     --loading-background: #607a80 !important;
     --loading-background-2: #082c33 !important;
     --hover-message-menu: #09323ac7;
