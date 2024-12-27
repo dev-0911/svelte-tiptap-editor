@@ -1,10 +1,10 @@
+import StarterKit from "@tiptap/starter-kit";
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
 import Underline from "@tiptap/extension-underline";
 import Subscript from "@tiptap/extension-subscript";
 import Superscript from "@tiptap/extension-superscript";
-
 import ListItem from "@tiptap/extension-list-item";
 import TextAlign from "@tiptap/extension-text-align";
 import CharacterCount from "@tiptap/extension-character-count";
@@ -38,6 +38,8 @@ import js from "highlight.js/lib/languages/javascript";
 import ts from "highlight.js/lib/languages/typescript";
 import html from "highlight.js/lib/languages/xml";
 import { all, createLowlight } from "lowlight";
+import HardBreak from "@tiptap/extension-hard-break";
+import HorizontalRule from "@tiptap/extension-horizontal-rule";
 
 const useExtensions = (appId: string, token: string) => {
     const lowlight = createLowlight(all);
@@ -47,12 +49,15 @@ const useExtensions = (appId: string, token: string) => {
     lowlight.register("ts", ts);
     // const doc = new Y.Doc(); // Initialize Y.Doc for shared editing
     return [
+        // StarterKit,
         History,
         Document,
         Paragraph,
         // CustomParagraph,
         Heading,
         // CustomHeading,
+        HardBreak,
+        HorizontalRule,
         Text,
         TextStyle,
         Bold,

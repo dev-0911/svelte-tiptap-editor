@@ -6,8 +6,6 @@
     import Toolbar from "./toolbars/Toolbar.svelte";
     import { useTiptapEditor } from "./useTiptapEditor";
     import CustomDragHandle from "./elements/CustomDragHandle";
-    import DragHandlerIcon from "$components/assets/svg/editor/DragHandlerIcon.svelte";
-    import PlusIcon from "$components/assets/svg/editor/PlusIcon.svelte";
 
     // Initial content for the editor
     const content = `<h1>One morning, when Gregor Samsa woke from troubled 
@@ -129,22 +127,11 @@ between its four familiar walls.</p>
         {#if editor}
             <Toolbar className="flex-0 relative z-10 w-full bg-background-toolbar border-b border-b-border-toolbar" {editor} {onInsertBelow} {onInsertAbove} {onReplace} />
             <!-- <DragHandle {editor}>123</DragHandle> -->
-            <CustomDragHandle
-                {editor}
-                tippyOptions={{ allowHTML: true, trigger: "click", interactive: true, arrow: false, theme: "drag-item", placement: "left-start", offset: [-8, 0] }}
-                className="pointer-events-none">
-                <div class="flex justify-start items-center gap-1">
-                    <div draggable="false" class="p-1 flex justify-center items-center bg-transparent hover:bg-background-hovered">
-                        <PlusIcon width="16px" height="16px" className="fill-text cursor-pointer" />
-                    </div>
-                    <div draggable="true" class="p-1 flex justify-center items-center bg-transparent hover:bg-background-hovered">
-                        <DragHandlerIcon width="16px" height="16px" className="fill-text cursor-grab" />
-                    </div>
-                </div>
-            </CustomDragHandle>
+            <CustomDragHandle {editor} tippyOptions={{ theme: "drag-item", placement: "left-start", arrow: false, offset: [0, 0], zIndex: 99 }} className="pointer-events-none" />
         {/if}
         <!-- <div bind:this={dragElement}></div> -->
 
         <div class="flex-1 relative z-0 w-full px-10 py-5 overflow-y-auto scrollbar" bind:this={element} spellcheck="false"></div>
     </div>
 </div>
+<!--, -->

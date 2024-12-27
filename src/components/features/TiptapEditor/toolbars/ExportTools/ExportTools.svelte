@@ -3,6 +3,8 @@
     import ExportWordIcon from "$components/assets/svg/editor/ExportWordIcon.svelte";
     import ImportWordIcon from "$components/assets/svg/editor/ImportWordIcon.svelte";
     import SharedToolbarButton from "$components/shared/ShareToolbarButton/SharedToolbarButton.svelte";
+    import CmdDownloadIcon from "$components/assets/svg/editor/CmdDownloadIcon.svelte";
+    import CmdUploadIcon from "$components/assets/svg/editor/CmdUploadIcon.svelte";
 
     export let editor;
 
@@ -71,12 +73,12 @@
 </script>
 
 <div class="flex justify-start items-center gap-1">
-    <SharedToolbarButton onClick={ExportToWord} disabled={!editor}>
-        <ExportWordIcon width="18px" height="18px" className={cn("fill-text-toolbar", !editor && "fill-text-toolbar-disabled")} />
+    <SharedToolbarButton onClick={ImportButtonClick} disabled={!editor}>
+        <CmdUploadIcon width="18px" height="18px" className={cn("fill-text-toolbar", !editor && "fill-text-toolbar-disabled")} />
+        <input type="file" accept=".docx" on:change={ImportFromInput} bind:this={fileInput} class="hidden" />
     </SharedToolbarButton>
 
-    <SharedToolbarButton onClick={ImportButtonClick} disabled={!editor}>
-        <ImportWordIcon width="18px" height="18px" className={cn("fill-text-toolbar", !editor && "fill-text-toolbar-disabled")} />
-        <input type="file" accept=".docx" on:change={ImportFromInput} bind:this={fileInput} class="hidden" />
+    <SharedToolbarButton onClick={ExportToWord} disabled={!editor}>
+        <CmdDownloadIcon width="18px" height="18px" className={cn("fill-text-toolbar", !editor && "fill-text-toolbar-disabled")} />
     </SharedToolbarButton>
 </div>

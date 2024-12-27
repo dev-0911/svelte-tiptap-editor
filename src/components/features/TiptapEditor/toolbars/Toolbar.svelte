@@ -38,8 +38,8 @@
         <IndentTools {editor} />
         <Divider />
         <CodeTools {editor} />
-        <!-- <Divider /> -->
-        <!-- <InsertTools {editor} /> -->
+        <Divider />
+        <InsertTools {editor} />
         <!-- <FloatingMenu
             {editor}
             shouldShow={onShow}
