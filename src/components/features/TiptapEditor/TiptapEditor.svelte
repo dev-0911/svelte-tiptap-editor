@@ -5,6 +5,9 @@
     import useExtensions from "./extensions/useExtensions";
     import Toolbar from "./toolbars/Toolbar.svelte";
     import { useTiptapEditor } from "./useTiptapEditor";
+    import CustomDragHandle from "./elements/CustomDragHandle";
+    import DragHandlerIcon from "$components/assets/svg/editor/DragHandlerIcon.svelte";
+    import PlusIcon from "$components/assets/svg/editor/PlusIcon.svelte";
 
     // Initial content for the editor
     const content = `<h1>One morning, when Gregor Samsa woke from troubled 
@@ -59,6 +62,8 @@ between its four familiar walls.</p>
 
     let element;
     let editor;
+    let dragElement;
+    let dragItem;
 
     // const words = writable(0);
     // const characters = writable(0);
@@ -72,15 +77,20 @@ between its four familiar walls.</p>
         editorProps.onDestroy();
     };
 
-    const onAdd = (content) => {
-        editorActions.addWithText(content);
+    const onInsertAbove = (content) => {
+        editorActions.insertAbove(content);
+    };
+
+    const onInsertBelow = (content) => {
+        editorActions.insertBelow(content);
     };
 
     const onReplace = (content) => {
         editorActions.replaceWithText(content);
     };
-
-    const extensions = useExtensions();
+    const appId = import.meta.env.VITE_TIPTAP_APP_ID;
+    const token = import.meta.env.VITE_TIPTAP_JWT_TOKEN;
+    const extensions = useExtensions(appId, token);
 
     onComponentMount(() => {
         editor = new Editor({
@@ -102,6 +112,9 @@ between its four familiar walls.</p>
                 editor = editor;
             },
         });
+        // dragItem = new DragHandle({
+        //     element: dragElement,
+        // });
     });
 
     onComponentDestroy(() => {
@@ -111,12 +124,27 @@ between its four familiar walls.</p>
     });
 </script>
 
-<div class="w-screen h-screen py-4 bg-background text-text">
-    <div class="mx-auto max-w-[1024px] h-full flex flex-col border border-border-toolbar text-text overflow-hidden">
+<div class="w-screen h-screen p-4 bg-background text-text">
+    <div class="mx-20 h-full flex flex-col border border-border-toolbar text-text overflow-hidden">
         {#if editor}
-            <Toolbar className="flex-0 relative z-10 w-full bg-background-toolbar border-b border-b-border-toolbar" {editor} {onAdd} {onReplace} />
+            <Toolbar className="flex-0 relative z-10 w-full bg-background-toolbar border-b border-b-border-toolbar" {editor} {onInsertBelow} {onInsertAbove} {onReplace} />
+            <!-- <DragHandle {editor}>123</DragHandle> -->
+            <CustomDragHandle
+                {editor}
+                tippyOptions={{ allowHTML: true, trigger: "click", interactive: true, arrow: false, theme: "drag-item", placement: "left-start", offset: [-8, 0] }}
+                className="pointer-events-none">
+                <div class="flex justify-start items-center gap-1">
+                    <div draggable="false" class="p-1 flex justify-center items-center bg-transparent hover:bg-background-hovered">
+                        <PlusIcon width="16px" height="16px" className="fill-text cursor-pointer" />
+                    </div>
+                    <div draggable="true" class="p-1 flex justify-center items-center bg-transparent hover:bg-background-hovered">
+                        <DragHandlerIcon width="16px" height="16px" className="fill-text cursor-grab" />
+                    </div>
+                </div>
+            </CustomDragHandle>
         {/if}
+        <!-- <div bind:this={dragElement}></div> -->
 
-        <div class="flex-1 relative z-0 w-full p-5 overflow-y-auto scrollbar" bind:this={element} spellcheck="false"></div>
+        <div class="flex-1 relative z-0 w-full px-10 py-5 overflow-y-auto scrollbar" bind:this={element} spellcheck="false"></div>
     </div>
 </div>

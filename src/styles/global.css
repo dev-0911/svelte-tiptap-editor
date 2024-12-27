@@ -31,6 +31,7 @@
 
 :root {
     --primary: #2d97f3;
+    --secondary: #777777;
     --background-color-main: #ffffff;
     /* #0e363e; */
     --background-color-main-hovered: #f3f4f6;
@@ -40,8 +41,8 @@
     --background-color-toolbar: #09323a;
     --background-color-toolbar-hovered: #ffffff33;
     --background-color-toolbar-focused: #57acf5;
-    --background-color-toolbar-selected: #81c1f8;
-    --background-color-toolbar-disabled: #000000;
+    --background-color-toolbar-selected: #ffffff55;
+    --background-color-toolbar-disabled: #09323a;
     --text-color-main: #09090b;
     --text-color-main-hovered: #09090b;
     --text-color-main-focused: #ffffff;
@@ -51,7 +52,7 @@
     --text-color-toolbar-hovered: #ffffff;
     --text-color-toolbar-focused: #ffffff;
     --text-color-toolbar-selected: #ffffff;
-    --text-color-toolbar-disabled: #ffffff;
+    --text-color-toolbar-disabled: #788f93;
     --border-color-main: #e4e4e4;
     --border-color-main-hovered: #ffffff;
     --border-color-main-focused: #ffffff;
@@ -62,6 +63,8 @@
     --border-color-toolbar-focused: #ffffff;
     --border-color-toolbar-selected: #ffffff;
     --border-color-toolbar-disabled: #ffffff;
+
+    --title-font-family: "Helvetica", sans-serif;
 
     /* --border-green: 3px solid #05d677;
     --loading-background: #607a80 !important;
