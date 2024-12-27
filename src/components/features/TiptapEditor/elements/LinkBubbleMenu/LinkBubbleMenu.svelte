@@ -1,10 +1,9 @@
 <script>
-    import cn from "classnames";
     import { onMount, onDestroy } from "svelte";
-    import { DragHandlePlugin } from "@tiptap-pro/extension-drag-handle";
 
     import DragHandlerIcon from "$components/assets/svg/editor/DragHandlerIcon.svelte";
     import PlusIcon from "$components/assets/svg/editor/PlusIcon.svelte";
+    import { BubbleMenuPlugin } from "@tiptap/extension-bubble-menu";
     import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
 
     import { useDragItem } from "./hooks/useDragItem";
@@ -27,8 +26,8 @@
     const { onNodeChange, onDuplicate, onCopy, onDelete, onSetColor, onSetBgColor } = useDragItem(editor);
 
     onMount(() => {
-        const plugin = DragHandlePlugin({
-            pluginKey: "dragHandle",
+        const plugin = BubbleMenuPlugin({
+            pluginKey: "linkBubbleMenu",
             editor,
             element,
             tippyOptions,

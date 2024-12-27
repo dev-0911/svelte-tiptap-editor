@@ -13,4 +13,11 @@
 
 .tippy-box[data-theme~="drag-item"] {
     background-color: transparent;
+    /* padding: 0; */
+
+    .tippy-content * {
+        color: var(--text-color-main) !important;
+        font-size: 16px !important;
+        text-align: left !important;
+    }
 }

@@ -12,6 +12,10 @@
     {disabled}
     on:click={onClick}
     data-command={command}
-    class={cn(className, "w-full px-2 py-1 flex justify-start items-center gap-2", "bg-background hover:bg-background-hovered text-sm text-left text-black hover:drop-shadow-md")}>
+    class={cn(
+        className,
+        "w-full px-2 py-1 flex justify-start items-center gap-2 rounded-sm",
+        "bg-background hover:bg-background-hovered text-sm text-left text-black hover:drop-shadow-md",
+    )}>
     <slot />
 </Button>
