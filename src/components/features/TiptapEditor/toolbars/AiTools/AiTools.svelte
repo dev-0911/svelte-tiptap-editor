@@ -20,10 +20,12 @@
     import PlusIcon from "$components/assets/svg/editor/PlusIcon.svelte";
     import TrashIcon from "$components/assets/svg/editor/TrashIcon.svelte";
     import { suggestionTemplates, suggestionCommands } from "./constant";
+    import ShareDropdownButton from "$components/shared/ShareDropdownButton/ShareDropdownButton.svelte";
 
     export let editor;
     export let onReplace;
-    export let onAdd;
+    export let onInsertAbove;
+    export let onInsertBelow;
 
     const API_URL = "https://steam.buntod.com/api/ai/prompt";
     const TOKEN = import.meta.env.VITE_AWS_TOKEN;
@@ -33,7 +35,6 @@
     let selectMenu;
 
     let command = null;
-    let tone = null;
     let content = null;
     let from = null;
     let to = null;
@@ -46,11 +47,11 @@
     $: showTooltip = false;
     $: filteredTemplates = !searchQuery.length ? suggestionTemplates : suggestionTemplates.filter((template) => template.toLowerCase().includes(searchQuery.toLowerCase()));
     $: filteredCommands = !searchQuery.length ? suggestionCommands : suggestionCommands.filter((template) => template.toLowerCase().includes(searchQuery.toLowerCase()));
+    $: tone = "Formal";
     let contents = [];
 
     const initDropdown = () => {
         command = null;
-        tone = null;
         content = null;
         from = null;
         to = null;
@@ -93,7 +94,7 @@
         middleware: [offset(8), flip(), shift()],
     });
 
-    async function handleGenerateAiText(command, content, tone) {
+    async function handleGenerateAiText(command, content) {
         loading = true; // Set loading state
         error = null; // Reset error state
         data = null; // Reset data state
@@ -122,12 +123,28 @@
         from = editor.state.selection.from;
         to = editor.state.selection.to;
         content = editor.state.doc.textBetween(from, to, " ");
-        // command = ev.currentTarget.dataset.command;
+        const language = ev.currentTarget.dataset.value;
+
         command = "assistant";
-        tone = ev.currentTarget.dataset.tone;
+
         ev.stopPropagation();
+
         searchQuery = "";
-        await handleGenerateAiText(command, content, tone);
+        await handleGenerateAiText(command, content);
+    }
+
+    async function handleTranslate(ev) {
+        from = editor.state.selection.from;
+        to = editor.state.selection.to;
+        content = editor.state.doc.textBetween(from, to, " ");
+        command = ev.currentTarget.dataset.command;
+
+        command = "assistant";
+
+        ev.stopPropagation();
+
+        searchQuery = "";
+        await handleGenerateAiText(command, content);
     }
 
     async function handleGenerateFromInput(ev) {
@@ -135,15 +152,20 @@
         from = editor.state.selection.from;
         to = editor.state.selection.to;
         content = editor.state.doc.textBetween(from, to, " ");
-        // command = ev.currentTarget.dataset.command;
-        // command = searchQuery;
+        command = ev.currentTarget.dataset.command;
+
         command = "assistant";
-        console.log(searchQuery);
-        // tone = ev.currentTarget.dataset.tone;
+
         tone = "default";
+
         ev.stopPropagation();
+
         searchQuery = "";
         await handleGenerateAiText(command, content, tone);
+    }
+
+    function handleChangeTone() {
+        tone = ev.target.dataset.value;
     }
 
     function handleReplaceContent() {
@@ -153,9 +175,16 @@
         initDropdown();
     }
 
-    function handleInsertContent() {
+    function handleInsertAboveContent() {
         if (!data?.content) return;
-        onAdd(data.content);
+        onInsertAbove(data.content);
+        showTooltip = false;
+        initDropdown();
+    }
+
+    function handleInsertBelowContent() {
+        if (!data?.content) return;
+        onInsertBelow(data.content);
         showTooltip = false;
         initDropdown();
     }
@@ -230,138 +259,111 @@
                     !!data && !filteredCommands?.length && "hidden",
                 )}>
                 {#if !data}
-                    <!-- <span class="px-2 py-1 text-xs text-border-toolbar">Edit or Review</span> -->
-
-                    {#if filteredTemplates.includes("improve fluency")}
-                        <button
-                            class="w-full px-2 py-1 flex justify-start items-center gap-2 bg-background hover:bg-background-hovered text-sm text-left text-black hover:drop-shadow-md"
-                            data-command="Improve fluency"
-                            on:click={handleGenerateFromButton}>
+                    {#if filteredTemplates.includes("autocomplete")}
+                        <ShareDropdownButton command="autocomplete" onClick={handleGenerateFromButton}>
                             <ImproveIcon width="16px" height="16px" className="fill-primary" />
-                            Improve fluency
-                        </button>
+                            Autocomplete
+                        </ShareDropdownButton>
                     {/if}
-                    {#if filteredTemplates.includes("paraphrase")}
-                        <button
-                            class="w-full px-2 py-1 flex justify-start items-center gap-2 bg-background hover:bg-background-hovered text-sm text-left text-black hover:drop-shadow-md">
-                            <ReplaceIcon width="16px" height="16px" className="fill-primary" />
-                            <span class="flex-1">Paraphrase</span>
-                            <ChevronRightIcon width="16px" height="16px" />
-                        </button>
-                        <Dropdown placement="right-start" offset={-8} class="w-[180px] p-1 border border-solid border-border rounded-md drop-shadow-md">
-                            <DropdownItem class="px-2 py-1" on:click={handleGenerateFromButton} data-command="paraphrase" data-tone="Academically">Academically</DropdownItem>
-                            <DropdownItem class="px-2 py-1" on:click={handleGenerateFromButton} data-command="paraphrase" data-tone="Casually">Casually</DropdownItem>
-                            <DropdownItem class="px-2 py-1" on:click={handleGenerateFromButton} data-command="paraphrase" data-tone="Persuasively">Persuasively</DropdownItem>
-                            <DropdownItem class="px-2 py-1" on:click={handleGenerateFromButton} data-command="paraphrase" data-tone="Boldly">Boldly</DropdownItem>
-                            <DropdownItem class="px-2 py-1" on:click={handleGenerateFromButton} data-command="paraphrase" data-tone="Frendly">Frendly</DropdownItem>
-                        </Dropdown>
+                    {#if filteredTemplates.includes("shorten text")}
+                        <ShareDropdownButton command="shorten text" onClick={handleGenerateFromButton}>
+                            <ImproveIcon width="16px" height="16px" className="fill-primary" />
+                            Shorten text
+                        </ShareDropdownButton>
                     {/if}
-                    {#if filteredTemplates.includes("simplyify")}
-                        <button
-                            class="w-full px-2 py-1 flex justify-start items-center gap-2 bg-background hover:bg-background-hovered text-sm text-left text-black hover:drop-shadow-md">
-                            <SimplifyIcon width="16px" height="16px" className="fill-primary" />
-                            <span class="flex-1">Simplify</span>
-                            <ChevronRightIcon width="16px" height="16px" />
-                        </button>
-                        <Dropdown placement="right-start" offset={-8} class="w-[180px] p-1 border border-solid border-border rounded-md drop-shadow-md">
-                            <DropdownItem class="px-2 py-1" on:click={handleGenerateFromButton} data-command="simplyify" data-tone="Academically">Academically</DropdownItem>
-                            <DropdownItem class="px-2 py-1" on:click={handleGenerateFromButton} data-command="simplyify" data-tone="Casually">Casually</DropdownItem>
-                            <DropdownItem class="px-2 py-1" on:click={handleGenerateFromButton} data-command="simplyify" data-tone="Persuasively">Persuasively</DropdownItem>
-                            <DropdownItem class="px-2 py-1" on:click={handleGenerateFromButton} data-command="simplyify" data-tone="Boldly">Boldly</DropdownItem>
-                            <DropdownItem class="px-2 py-1" on:click={handleGenerateFromButton} data-command="simplyify" data-tone="Frendly">Frendly</DropdownItem>
-                        </Dropdown>
-                    {/if}
-                    {#if filteredTemplates.includes("longer")}
-                        <button
-                            class="w-full px-2 py-1 flex justify-start items-center gap-2 bg-background hover:bg-background-hovered text-sm text-left text-black hover:drop-shadow-md"
-                            on:click={handleGenerateFromButton}
-                            data-command="longer">
+                    {#if filteredTemplates.includes("lengthen text")}
+                        <ShareDropdownButton command="lengthen text" onClick={handleGenerateFromButton}>
                             <LongIcon width="16px" height="16px" className="fill-primary" />
-                            <span class="flex-1">Make longer</span>
-                        </button>
+                            Lengthen text
+                        </ShareDropdownButton>
+                    {/if}
+                    {#if filteredTemplates.includes("humanize")}
+                        <ShareDropdownButton command="humanize" onClick={handleGenerateFromButton}>
+                            <ImproveIcon width="16px" height="16px" className="fill-primary" />
+                            Humanize
+                        </ShareDropdownButton>
+                    {/if}
+                    {#if filteredTemplates.includes("improve grammar")}
+                        <ShareDropdownButton command="improve grammar" onClick={handleGenerateFromButton}>
+                            <ImproveIcon width="16px" height="16px" className="fill-primary" />
+                            Improve grammar
+                        </ShareDropdownButton>
+                    {/if}
+                    {#if filteredTemplates.includes("simplify")}
+                        <ShareDropdownButton command="simplify" onClick={handleGenerateFromButton}>
+                            <SimplifyIcon width="16px" height="16px" className="fill-primary" />
+                            Simplify
+                        </ShareDropdownButton>
+                    {/if}
+                    {#if filteredTemplates.includes("summarize")}
+                        <ShareDropdownButton command="summarize" onClick={handleGenerateFromButton}>
+                            <SummarizeIcon width="16px" height="16px" className="fill-primary" />
+                            Summarize
+                        </ShareDropdownButton>
+                    {/if}
+
+                    {#if filteredTemplates.includes("tone of voice")}
+                        <ShareDropdownButton>
+                            <ReplaceIcon width="16px" height="16px" className="fill-primary" />
+                            <span class="flex-1">Tone of voice</span>
+                            <ChevronRightIcon width="16px" height="16px" />
+                        </ShareDropdownButton>
+                        <Dropdown placement="right-start" offset={-8} class="w-[180px] p-1 border border-solid border-border rounded-md drop-shadow-md">
+                            <DropdownItem class="px-2 py-1" on:click={handleChangeTone} data-value="Formal">Formal</DropdownItem>
+                            <DropdownItem class="px-2 py-1" on:click={handleChangeTone} data-value="Friendly">Friendly</DropdownItem>
+                            <DropdownItem class="px-2 py-1" on:click={handleChangeTone} data-value="Professional">Professional</DropdownItem>
+                            <DropdownItem class="px-2 py-1" on:click={handleChangeTone} data-value="Causal">Causal</DropdownItem>
+                        </Dropdown>
                     {/if}
                     {#if filteredTemplates.includes("translate")}
-                        <button
-                            class="w-full px-2 py-1 flex justify-start items-center gap-2 bg-background hover:bg-background-hovered text-sm text-left text-black hover:drop-shadow-md">
+                        <ShareDropdownButton>
                             <TranslateIcon width="16px" height="16px" className="fill-primary" />
                             <span class="flex-1">Translate</span>
                             <ChevronRightIcon width="16px" height="16px" />
-                        </button>
+                        </ShareDropdownButton>
                         <Dropdown placement="right-start" offset={-8} class="w-[180px] p-1 border border-solid border-border rounded-md drop-shadow-md">
-                            <DropdownItem class="px-2 py-1" on:click={handleGenerateFromButton} data-command="translate" data-tone="Academically">Academically</DropdownItem>
-                            <DropdownItem class="px-2 py-1" on:click={handleGenerateFromButton} data-command="translate" data-tone="Casually">Casually</DropdownItem>
-                            <DropdownItem class="px-2 py-1" on:click={handleGenerateFromButton} data-command="translate" data-tone="Persuasively">Persuasively</DropdownItem>
-                            <DropdownItem class="px-2 py-1" on:click={handleGenerateFromButton} data-command="translate" data-tone="Boldly">Boldly</DropdownItem>
-                            <DropdownItem class="px-2 py-1" on:click={handleGenerateFromButton} data-command="translate" data-tone="Frendly">Frendly</DropdownItem>
+                            <DropdownItem class="px-2 py-1" on:click={handleTranslate} data-value="Chinese">Chinese</DropdownItem>
+                            <DropdownItem class="px-2 py-1" on:click={handleTranslate} data-value="English">English</DropdownItem>
+                            <DropdownItem class="px-2 py-1" on:click={handleTranslate} data-value="French">French</DropdownItem>
+                            <DropdownItem class="px-2 py-1" on:click={handleTranslate} data-value="German">German</DropdownItem>
+                            <DropdownItem class="px-2 py-1" on:click={handleTranslate} data-value="Italian">Italian</DropdownItem>
+                            <DropdownItem class="px-2 py-1" on:click={handleTranslate} data-value="Japanese">Japanese</DropdownItem>
+                            <DropdownItem class="px-2 py-1" on:click={handleTranslate} data-value="Korean">Korean</DropdownItem>
+                            <DropdownItem class="px-2 py-1" on:click={handleTranslate} data-value="Portuguese">Portuguese</DropdownItem>
+                            <DropdownItem class="px-2 py-1" on:click={handleTranslate} data-value="Russian">Russian</DropdownItem>
+                            <DropdownItem class="px-2 py-1" on:click={handleTranslate} data-value="Spanish">Spanish</DropdownItem>
                         </Dropdown>
-                    {/if}
-                    <!-- <span class="px-2 py-1 text-xs text-border-toolbar">Generate from selection</span> -->
-                    {#if filteredTemplates.includes("summarize")}
-                        <button
-                            class="w-full px-2 py-1 flex justify-start items-center gap-2 bg-background hover:bg-background-hovered text-sm text-left text-black hover:drop-shadow-md"
-                            on:click={handleGenerateFromButton}
-                            data-command="summarize">
-                            <SummarizeIcon width="16px" height="16px" className="fill-primary" />Summarize
-                        </button>
-                    {/if}
-                    {#if filteredTemplates.includes("write opposing argument")}
-                        <button
-                            class="w-full px-2 py-1 flex justify-start items-center gap-2 bg-background hover:bg-background-hovered text-sm text-left text-black hover:drop-shadow-md"
-                            on:click={handleGenerateFromButton}
-                            data-command="write opposing argument">
-                            <PencilIcon width="16px" height="16px" className="fill-primary" />Write opposing argument
-                        </button>
-                    {/if}
-                    {#if filteredTemplates.includes("write with more depth")}
-                        <button
-                            class="w-full px-2 py-1 flex justify-start items-center gap-2 bg-background hover:bg-background-hovered text-sm text-left text-black hover:drop-shadow-md"
-                            on:click={handleGenerateFromButton}
-                            data-command="write with more depth">
-                            <PencilIcon width="16px" height="16px" className="fill-primary" />Write with more depth
-                        </button>
-                    {/if}
-                    {#if filteredTemplates.includes("continue writing")}
-                        <!-- <span class="px-2 py-1 text-xs text-border-toolbar">Write</span> -->
-                        <button
-                            class="w-full px-2 py-1 flex justify-start items-center gap-2 bg-background hover:bg-background-hovered text-sm text-left text-black hover:drop-shadow-md"
-                            on:click={handleGenerateFromButton}
-                            data-command="continue writing">
-                            <PencilIcon width="16px" height="16px" className="fill-primary" />
-                            Continue Writing
-                        </button>
                     {/if}
                 {:else}
                     {#if filteredCommands.includes("replace selection")}
-                        <button
-                            class="w-full px-2 py-1 flex justify-start items-center gap-2 bg-background hover:bg-background-hovered text-sm text-left text-black hover:drop-shadow-md"
-                            on:click={handleReplaceContent}>
+                        <ShareDropdownButton onClick={handleReplaceContent}>
                             <CheckIcon width="16px" height="16px" className="fill-primary" />
                             Replace Selection
-                        </button>
+                        </ShareDropdownButton>
+                    {/if}
+                    {#if filteredCommands.includes("insert above")}
+                        <ShareDropdownButton onClick={handleInsertAboveContent}>
+                            <PlusIcon width="16px" height="16px" className="fill-primary" />
+                            Insert above
+                        </ShareDropdownButton>
                     {/if}
                     {#if filteredCommands.includes("insert below")}
-                        <button
-                            class="w-full px-2 py-1 flex justify-start items-center gap-2 bg-background hover:bg-background-hovered text-sm text-left text-black hover:drop-shadow-md"
-                            on:click={handleInsertContent}>
+                        <ShareDropdownButton onClick={handleInsertBelowContent}>
                             <PlusIcon width="16px" height="16px" className="fill-primary" />
                             Insert below
-                        </button>
+                        </ShareDropdownButton>
                     {/if}
                     {#if filteredCommands.includes("try again")}
-                        <button
-                            class="w-full px-2 py-1 flex justify-start items-center gap-2 bg-background hover:bg-background-hovered text-sm text-left text-black hover:drop-shadow-md"
-                            on:click={handleRetryContent}>
+                        <ShareDropdownButton onClick={handleRetryContent}>
                             <ReplaceIcon width="16px" height="16px" className="fill-primary" />
                             Try again
-                        </button>
+                        </ShareDropdownButton>
                     {/if}
                     {#if filteredCommands.includes("discard")}
-                        <button
-                            class="w-full px-2 py-1 flex justify-start items-center gap-2 bg-background hover:bg-background-hovered text-sm text-left text-black hover:drop-shadow-md"
-                            on:click={handleDiscardContent}>
+                        <ShareDropdownButton onClick={handleDiscardContent}>
                             <TrashIcon width="16px" height="16px" className="fill-primary" />
                             Discard
-                        </button>
+                        </ShareDropdownButton>
                     {/if}
                 {/if}
             </div>

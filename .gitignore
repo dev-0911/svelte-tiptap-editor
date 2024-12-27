@@ -28,3 +28,4 @@ _.sln
 # Environment variables.
 .env
 .env.local
+.npmrc

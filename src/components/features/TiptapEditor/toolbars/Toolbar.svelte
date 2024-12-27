@@ -8,28 +8,38 @@
     import IndentTools from "./IndentTools/IndentTools.svelte";
     import FontTools from "./FontTools/FontTools.svelte";
     import StyleTools from "./StyleTools/StyleTools.svelte";
+    import ExportTools from "./ExportTools/ExportTools.svelte";
+    import CodeTools from "./CodeTools/CodeTools.svelte";
+    import InsertTools from "./InsertTools/InsertTools.svelte";
 
     export let editor;
     export let className;
-    export let onAdd;
+    export let onInsertBelow;
+    export let onInsertAbove;
     export let onReplace;
 </script>
 
 <div id="toolbar" class={cn(className, "flex justify-center items-center")}>
-    <div class={cn("w-full p-2.5 flex justify-start items-center gap-2 bg-background-toolbar text-text-toolbar")}>
-        <AiTools {editor} {onReplace} {onAdd} />
+    <div class={cn("w-full p-2.5 flex flex-wrap justify-start items-center gap-2 bg-background-toolbar text-text-toolbar")}>
+        <AiTools {editor} {onReplace} {onInsertBelow} {onInsertAbove} />
         <Divider />
         <CommandTools {editor} />
         <Divider />
-        <FontTools {editor} />
+        <ExportTools {editor} />
         <Divider />
         <FormattingTools {editor} />
         <Divider />
-        <StyleTools {editor} />
-        <Divider />
         <AlignTools {editor} />
         <Divider />
+        <FontTools {editor} />
+        <Divider />
+        <StyleTools {editor} />
+        <Divider />
         <IndentTools {editor} />
+        <Divider />
+        <CodeTools {editor} />
+        <!-- <Divider /> -->
+        <!-- <InsertTools {editor} /> -->
         <!-- <FloatingMenu
             {editor}
             shouldShow={onShow}

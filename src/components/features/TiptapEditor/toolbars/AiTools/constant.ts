@@ -1,12 +1,2 @@
-export const suggestionTemplates = [
-    "improve fluency",
-    "paraphrase",
-    "simplify",
-    "make longer",
-    "translate",
-    "summarize",
-    "write opposing argument",
-    "write with more depth",
-    "continue writing",
-];
-export const suggestionCommands = ["replace selection", "insert below", "try again", "discard"];
+export const suggestionTemplates = ["autocomplete", "shorten text", "lengthen text", "humanize", "improve grammar", "simplify", "summarize", "tone of voice", "translate"];
+export const suggestionCommands = ["replace selection", "insert above", "insert below", "try again", "discard"];

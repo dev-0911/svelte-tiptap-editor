@@ -17,6 +17,7 @@ import TextStyle from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
 import Highlight from "@tiptap/extension-highlight";
 import CodeBlock from "@tiptap/extension-code-block";
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import FontFamily from "@tiptap/extension-font-family";
 import FontSize from "tiptap-extension-font-size";
 import BubbleMenu from "@tiptap/extension-bubble-menu";
@@ -25,10 +26,26 @@ import OrderedList from "@tiptap/extension-ordered-list";
 import BulletList from "@tiptap/extension-bullet-list";
 import TaskList from "@tiptap/extension-task-list";
 import TaskItem from "@tiptap/extension-task-item";
-import CustomOrderedList from "./CustomOrderList";
-import CustomBulletList from "./CustomBulletList";
+import Typography from "@tiptap/extension-typography";
+import Dropcursor from "@tiptap/extension-dropcursor";
+// import CustomOrderedList from "./CustomOrderList";
+// import CustomBulletList from "./CustomBulletList";
+import { Export } from "@tiptap-pro/extension-export";
+import { Import } from "@tiptap-pro/extension-import";
+import FileHandler from "@tiptap-pro/extension-file-handler";
+import css from "highlight.js/lib/languages/css";
+import js from "highlight.js/lib/languages/javascript";
+import ts from "highlight.js/lib/languages/typescript";
+import html from "highlight.js/lib/languages/xml";
+import { all, createLowlight } from "lowlight";
 
-const useExtensions = () => {
+const useExtensions = (appId: string, token: string) => {
+    const lowlight = createLowlight(all);
+    lowlight.register("html", html);
+    lowlight.register("css", css);
+    lowlight.register("js", js);
+    lowlight.register("ts", ts);
+    // const doc = new Y.Doc(); // Initialize Y.Doc for shared editing
     return [
         History,
         Document,
@@ -48,16 +65,19 @@ const useExtensions = () => {
         }),
         Color,
         Highlight.configure({ multicolor: true }),
-        CodeBlock,
+        CodeBlockLowlight.configure({
+            lowlight,
+            defaultLanguage: "plaintext",
+        }),
         TextAlign.configure({
             types: ["heading", "paragraph"],
         }),
         Subscript,
         Superscript,
-        // OrderedList,
-        CustomOrderedList,
-        // BulletList,
-        CustomBulletList,
+        OrderedList,
+        // CustomOrderedList,
+        BulletList,
+        // CustomBulletList,
         ListItem,
         TaskList,
         TaskItem,
@@ -127,7 +147,68 @@ const useExtensions = () => {
         }),
 
         // CustomImage,
+        Typography,
+        Dropcursor,
         CharacterCount.configure(),
+        Import.configure({
+            appId,
+            token,
+        }),
+        Export.configure({
+            appId,
+            token,
+        }),
+        FileHandler.configure({
+            allowedMimeTypes: ["image/png", "image/jpeg", "image/gif", "image/webp"],
+            onDrop: (currentEditor, files, pos) => {
+                files.forEach((file) => {
+                    const fileReader = new FileReader();
+
+                    fileReader.readAsDataURL(file);
+                    fileReader.onload = () => {
+                        currentEditor
+                            .chain()
+                            .insertContentAt(pos, {
+                                type: "image",
+                                attrs: {
+                                    src: fileReader.result,
+                                },
+                            })
+                            .focus()
+                            .run();
+                    };
+                });
+            },
+            onPaste: (currentEditor, files, htmlContent) => {
+                files.forEach((file) => {
+                    if (htmlContent) {
+                        // if there is htmlContent, stop manual insertion & let other extensions handle insertion via inputRule
+                        // you could extract the pasted file from this url string and upload it to a server for example
+                        console.log(htmlContent); // eslint-disable-line no-console
+                        return false;
+                    }
+
+                    const fileReader = new FileReader();
+
+                    fileReader.readAsDataURL(file);
+                    fileReader.onload = () => {
+                        currentEditor
+                            .chain()
+                            .insertContentAt(currentEditor.state.selection.anchor, {
+                                type: "image",
+                                attrs: {
+                                    src: fileReader.result,
+                                },
+                            })
+                            .focus()
+                            .run();
+                    };
+                });
+            },
+        }),
+        // Collaboration.configure({
+        //     document: doc, // Configure Y.Doc for collaboration
+        // }),
     ];
 };
 

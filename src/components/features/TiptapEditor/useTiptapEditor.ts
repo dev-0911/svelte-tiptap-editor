@@ -92,6 +92,41 @@ export const useTiptapEditor = () => {
                 });
             }
         },
+        insertBelow: (text: string) => {
+            if (tiptapEditorStore) {
+                tiptapEditorStore.subscribe((editor) => {
+                    if (editor) {
+                        const { to } = editor.state.selection;
+                        // Get the position right after the selected text
+                        const posBelowSelection = to; // 'to' points to the end of the selection
+
+                        // Create a transaction to insert the new text
+                        const transaction = editor.state.tr.insertText(text, posBelowSelection);
+
+                        // Dispatch the transaction
+                        editor.view.dispatch(transaction);
+                    }
+                });
+            }
+        },
+        insertAbove: (text: string) => {
+            if (tiptapEditorStore) {
+                tiptapEditorStore.subscribe((editor) => {
+                    if (editor) {
+                        const { from } = editor.state.selection;
+                        // Move the cursor to the end of the selected text
+                        // Get the position of the node above the selection
+                        // const posAboveSelection = editor.state.doc.resolve(from - 1).before(); // or use to - 1 depending on your needs
+                        const posAboveSelection = from - 1; // 'to' points to the end of the selection
+                        // Create a transaction to insert the new text
+                        const transaction = editor.state.tr.insertText(text, posAboveSelection);
+
+                        // Dispatch the transaction
+                        editor.view.dispatch(transaction);
+                    }
+                });
+            }
+        },
     };
 
     return [tiptapProps, tiptapActions];
