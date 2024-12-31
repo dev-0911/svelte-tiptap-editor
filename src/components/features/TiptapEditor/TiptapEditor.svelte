@@ -6,6 +6,10 @@
     import Toolbar from "./toolbars/Toolbar.svelte";
     import { useTiptapEditor } from "./useTiptapEditor";
     import CustomDragHandle from "./elements/CustomDragHandle";
+    import LinkBubbleMenu from "./elements/LinkBubbleMenu/LinkBubbleMenu.svelte";
+    import TableColumn from "./extensions/Table/menus/TableColumn/TableColumn.svelte";
+    import TableRow from "./extensions/Table/menus/TableRow/TableRow.svelte";
+    import ImageBlockMenu from "./extensions/ImageBlock/components/ImageBlockMenu.svelte";
 
     // Initial content for the editor
     const content = `<h1>One morning, when Gregor Samsa woke from troubled 
@@ -126,8 +130,11 @@ between its four familiar walls.</p>
     <div class="mx-20 h-full flex flex-col border border-border-toolbar text-text overflow-hidden">
         {#if editor}
             <Toolbar className="flex-0 relative z-10 w-full bg-background-toolbar border-b border-b-border-toolbar" {editor} {onInsertBelow} {onInsertAbove} {onReplace} />
-            <!-- <DragHandle {editor}>123</DragHandle> -->
-            <CustomDragHandle {editor} tippyOptions={{ theme: "drag-item", placement: "left-start", arrow: false, offset: [0, 0], zIndex: 99 }} className="pointer-events-none" />
+            <CustomDragHandle {editor} />
+            <LinkBubbleMenu {editor} />
+            <TableColumn {editor} />
+            <TableRow {editor} />
+            <ImageBlockMenu {editor} />
         {/if}
         <!-- <div bind:this={dragElement}></div> -->
 

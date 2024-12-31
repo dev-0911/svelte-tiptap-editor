@@ -1,91 +1,102 @@
 <script>
     import { onMount, onDestroy } from "svelte";
 
-    import DragHandlerIcon from "$components/assets/svg/editor/DragHandlerIcon.svelte";
-    import PlusIcon from "$components/assets/svg/editor/PlusIcon.svelte";
     import { BubbleMenuPlugin } from "@tiptap/extension-bubble-menu";
-    import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
-
-    import { useDragItem } from "./hooks/useDragItem";
+    import { Button, Input, Toggle, Tooltip } from "flowbite-svelte";
+    import CmdEditIcon from "$components/assets/svg/editor/CmdEditIcon.svelte";
+    import CmdUnlinkIcon from "$components/assets/svg/editor/CmdUnlinkIcon.svelte";
+    import Divider from "$components/shared/Divider/Divider.svelte";
+    import SharedToolbarButton from "$components/shared/ShareToolbarButton/SharedToolbarButton.svelte";
+    import CmdLinkIcon from "$components/assets/svg/editor/CmdLinkIcon.svelte";
+    import SharedBubbleMenu from "$components/shared/SharedBubbleMenu/SharedBubbleMenu.svelte";
+    import SharedBubbleMenuButton from "$components/shared/SharedBubbleMenuButton/SharedBubbleMenuButton.svelte";
 
     export let editor;
-    export let tippyOptions = {};
 
-    export let className;
     let element;
+    let showEdit = false;
+    let inputValue;
+    $: url = editor.getAttributes("link").href;
+    $: sanitizedLink = url?.startsWith("javascript:") ? "" : url;
+    $: isValidUrl = /^(\S+):(\/\/)?\S+$/.test(inputValue);
+    $: isChecked = false;
 
-    $: dragMenuOpen = false;
-    $: colorSubmenuOpen = false;
-
-    $: {
-        if (editor) {
-            editor.commands.setMeta("lockDragHandle", !!dragMenuOpen);
-        }
-    }
-
-    const { onNodeChange, onDuplicate, onCopy, onDelete, onSetColor, onSetBgColor } = useDragItem(editor);
-
+    console.log(url, sanitizedLink);
     onMount(() => {
         const plugin = BubbleMenuPlugin({
             pluginKey: "linkBubbleMenu",
             editor,
             element,
-            tippyOptions,
-            onNodeChange,
+            tippyOptions: {
+                theme: "bubble-menu",
+                placement: "top-start",
+                popperOptions: {
+                    modifiers: [{ name: "flip", enabled: false }],
+                },
+                appendTo: () => {
+                    return document.getElementById("PORTAL-ROOT");
+                },
+                onHidden: () => {
+                    showEdit = false;
+                },
+                arrow: false,
+            },
+            shouldShow: ({ editor }) => {
+                return editor.isActive("link");
+            },
         });
 
         editor.registerPlugin(plugin);
 
-        return () => editor.unregisterPlugin("dragHandle");
+        return () => editor.unregisterPlugin("linkBubbleMenu");
     });
 
-    const handleDragMenuOpen = () => {
-        editor.commands.setMeta("lockDragHandle", true);
+    const handleEdit = () => {
+        showEdit = true;
+        inputValue = url;
     };
-
-    const handleDuplicate = () => {
-        onDuplicate();
-        editor.commands.setMeta("lockDragHandle", false);
-        dragMenuOpen = false;
+    const handleSet = () => {
+        editor
+            .chain()
+            .focus()
+            .setLink({ href: inputValue, target: isChecked ? "_blank" : "" })
+            .run();
+        showEdit = false;
     };
-
-    const handleCopy = () => {
-        onCopy();
-        editor.commands.setMeta("lockDragHandle", false);
-        dragMenuOpen = false;
-    };
-
-    const handleDelete = () => {
-        onDelete();
-        editor.commands.setMeta("lockDragHandle", false);
-        dragMenuOpen = false;
-    };
-
-    const handleColor = () => {
-        editor.commands.setMeta("lockDragHandle", false);
-        dragMenuOpen = false;
+    const handleRemove = () => {
+        editor.chain().focus().extendMarkRange("link").unsetLink().run();
+        showEdit = false;
     };
 </script>
 
-<div bind:this={element} class={className} draggable="false" style="pointer-events: none;">
-    <div class="flex justify-start items-center gap-1">
-        <div draggable="false" class="p-1 flex justify-center items-center bg-transparent hover:bg-background-hovered">
-            <PlusIcon width="16px" height="16px" className="fill-text cursor-pointer" />
-        </div>
-        <button draggable="true" class="p-1 flex justify-center items-center bg-transparent hover:bg-background-hovered">
-            <DragHandlerIcon width="16px" height="16px" className="fill-text cursor-grab" />
-        </button>
+<div bind:this={element}>
+    {#if showEdit}
+        <div class="border border-border-toolbar bg-background-toolbar p-2 rounded-md">
+            <div class="mb-2 flex justify-start items-center gap-2">
+                <Input id="input-addon" name="link-url" type="url" placeholder="Enter URL" size="sm" class="bg-white text-text" bind:value={inputValue}>
+                    <CmdLinkIcon slot="left" width="16px" height="16px" />
+                </Input>
 
-        <Dropdown
-            placement="right"
-            bind:open={dragMenuOpen}
-            on:show={handleDragMenuOpen}
-            class="p-2 bg-white border border-solid border-border rounded-md !text-text !text-sm drop-shadow-md">
-            <DropdownItem on:click={handleDuplicate}>Duplicate</DropdownItem>
-            <DropdownItem on:click={handleCopy}>Copy</DropdownItem>
-            <DropdownItem on:click={handleDelete}>Delete</DropdownItem>
-        </Dropdown>
-    </div>
+                <Button class="bg-text" size="sm" disabled={!isValidUrl} on:click={handleSet}>Set</Button>
+            </div>
+            <Toggle bind:checked={isChecked} size="small" class="text-text-toolbar">
+                <svelte:fragment slot="offLabel">Open in new tab</svelte:fragment>
+            </Toggle>
+        </div>
+    {:else}
+        <SharedBubbleMenu>
+            <div class="flex justify-start items-center gap-1">
+                <a href={sanitizedLink} target="_blank" class="text-sm underline break-all">
+                    {url}
+                </a>
+
+                <Divider />
+                <SharedBubbleMenuButton onClick={handleEdit} label="Edit link"><CmdEditIcon width="16px" height="16px" /></SharedBubbleMenuButton>
+                <SharedBubbleMenuButton onClick={handleRemove} label="Remove link"><CmdUnlinkIcon width="16px" height="16px"></CmdUnlinkIcon></SharedBubbleMenuButton>
+            </div>
+        </SharedBubbleMenu>
+    {/if}
 </div>
 
 <!-- transition:fade={{ duration: 200 }} -->
+<!-- rel="noopener noreferrer"  -->

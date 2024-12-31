@@ -84,6 +84,7 @@
         "svelte-floating-ui": "^1.5.9",
         "tippy.js": "^6.3.7",
         "tiptap-extension-font-size": "^1.2.0",
+        "uuid": "^11.0.3",
         "y-prosemirror": "^1.2.15",
         "y-protocols": "^1.0.6",
         "yjs": "^13.6.21"

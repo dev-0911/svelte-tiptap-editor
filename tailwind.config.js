@@ -1,15 +1,16 @@
 /** @type {import('tailwindcss').Config} */
 import flowbitePlugin from "flowbite/plugin";
+const defaultTheme = require("tailwindcss/defaultTheme");
 
 export default {
     content: ["../templates/**/*.html", "./src/**/*.css", "./src/**/*.{html,svelte,ts}", "./node_modules/flowbite-svelte/**/*.{html,js,svelte,ts}"],
     theme: {
-        fontFamily: {
-            sans: ["Tahoma", "ui-sans-serif", "sans-serif"],
-            serif: ["Helvetica", "ui-serif", "serif"],
-            mono: ["Courier New", "ui-monospace", "monospace"],
-        },
         extend: {
+            fontFamily: {
+                sans: ["Inter", ...defaultTheme.fontFamily.sans],
+                // serif: ["Helvetica", "ui-serif", "serif"],
+                // mono: ["Courier New", "ui-monospace", "monospace"],
+            },
             colors: {
                 primary: "var(--primary)",
 
