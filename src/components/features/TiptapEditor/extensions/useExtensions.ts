@@ -40,6 +40,9 @@ import html from "highlight.js/lib/languages/xml";
 import { all, createLowlight } from "lowlight";
 import HardBreak from "@tiptap/extension-hard-break";
 import HorizontalRule from "@tiptap/extension-horizontal-rule";
+import { Table, TableCell, TableHeader, TableRow } from "./Table";
+import { ImageBlock } from "./ImageBlock";
+import { ImageUpload } from "./ImageUpload";
 
 const useExtensions = (appId: string, token: string) => {
     const lowlight = createLowlight(all);
@@ -214,6 +217,13 @@ const useExtensions = (appId: string, token: string) => {
         // Collaboration.configure({
         //     document: doc, // Configure Y.Doc for collaboration
         // }),
+        //AdvancedT extensions
+        Table,
+        TableCell,
+        TableHeader,
+        TableRow,
+        ImageBlock,
+        ImageUpload,
     ];
 };
 

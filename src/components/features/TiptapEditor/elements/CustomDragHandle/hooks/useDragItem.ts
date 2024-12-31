@@ -45,6 +45,7 @@ export const useDragItem = (editor: Editor | null) => {
         editor.chain().setMeta("hideDragHandle", true).setNodeSelection(currentNodePos).run();
         document.execCommand("copy");
     };
+
     const onDelete = () => {
         if (!editor || !currentNode) return;
 

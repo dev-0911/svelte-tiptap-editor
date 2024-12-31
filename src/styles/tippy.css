@@ -21,3 +21,14 @@
         text-align: left !important;
     }
 }
+
+.tippy-box[data-theme~="bubble-menu"] {
+    background-color: transparent;
+    /* padding: 0; */
+
+    .tippy-content * {
+        color: var(--text-color-main) !important;
+        font-size: 12px !important;
+        text-align: left !important;
+    }
+}

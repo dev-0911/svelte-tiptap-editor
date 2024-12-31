@@ -8,19 +8,24 @@
     import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
 
     import { useDragItem } from "./hooks/useDragItem";
+    import SharedBubbleMenuItem from "$components/shared/SharedBubbleMenuItem/SharedBubbleMenuItem.svelte";
+    import InsertTableIcon from "$components/assets/svg/editor/InsertTableIcon.svelte";
+    import InsertImageIcon from "$components/assets/svg/editor/InsertImageIcon.svelte";
+    import CmdDuplicateIcon from "$components/assets/svg/editor/CmdDuplicateIcon.svelte";
+    import CmdCopyIcon from "$components/assets/svg/editor/CmdCopyIcon.svelte";
+    import CmdTrashIcon from "$components/assets/svg/editor/CmdTrashIcon.svelte";
+    import SharedDropdown from "$components/shared/SharedDropdown/SharedDropdown.svelte";
 
     export let editor;
-    export let tippyOptions = {};
-
-    export let className;
     let element;
 
-    $: dragMenuOpen = false;
+    $: createNodeMenuOpen = false;
+    $: editNodeMenuOpen = false;
     $: colorSubmenuOpen = false;
 
     $: {
         if (editor) {
-            editor.commands.setMeta("lockDragHandle", !!dragMenuOpen);
+            editor.commands.setMeta("lockDragHandle", editNodeMenuOpen || createNodeMenuOpen);
         }
     }
 
@@ -31,7 +36,7 @@
             pluginKey: "dragHandle",
             editor,
             element,
-            tippyOptions,
+            tippyOptions: { theme: "drag-item", placement: "left-start", arrow: false, offset: [-1, 0], zIndex: 99 },
             onNodeChange,
         });
 
@@ -47,45 +52,69 @@
     const handleDuplicate = () => {
         onDuplicate();
         editor.commands.setMeta("lockDragHandle", false);
-        dragMenuOpen = false;
+        editNodeMenuOpen = false;
+        createNodeMenuOpen = false;
     };
 
     const handleCopy = () => {
         onCopy();
         editor.commands.setMeta("lockDragHandle", false);
-        dragMenuOpen = false;
+        editNodeMenuOpen = false;
+        createNodeMenuOpen = false;
     };
 
     const handleDelete = () => {
         onDelete();
         editor.commands.setMeta("lockDragHandle", false);
-        dragMenuOpen = false;
+        editNodeMenuOpen = false;
+        createNodeMenuOpen = false;
     };
 
     const handleColor = () => {
         editor.commands.setMeta("lockDragHandle", false);
-        dragMenuOpen = false;
+        editNodeMenuOpen = false;
+        createNodeMenuOpen = false;
+    };
+
+    const handleAddTable = () => {
+        editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: false }).run();
+        editor.commands.setMeta("lockDragHandle", false);
+        editNodeMenuOpen = false;
+        createNodeMenuOpen = false;
+    };
+
+    const handleAddImage = () => {
+        editor.chain().focus().setImageUpload().run();
+        editor.commands.setMeta("lockDragHandle", false);
+        editNodeMenuOpen = false;
+        createNodeMenuOpen = false;
     };
 </script>
 
-<div bind:this={element} class={className} draggable="false" style="pointer-events: none;">
+<div bind:this={element} draggable="false" style="pointer-events: none;">
     <div class="flex justify-start items-center gap-1">
         <div draggable="false" class="p-1 flex justify-center items-center bg-transparent hover:bg-background-hovered">
             <PlusIcon width="16px" height="16px" className="fill-text cursor-pointer" />
         </div>
+
+        <SharedDropdown placement="right" bind:open={createNodeMenuOpen} on:show={handleDragMenuOpen} className="w-44">
+            <SharedBubbleMenuItem onClick={handleAddTable} label="Insert a table">
+                <InsertTableIcon width="16px" height="16px" />
+            </SharedBubbleMenuItem>
+            <SharedBubbleMenuItem onClick={handleAddImage} label="Insert an image">
+                <InsertImageIcon width="16px" height="16px" />
+            </SharedBubbleMenuItem>
+        </SharedDropdown>
+
         <button draggable="true" class="p-1 flex justify-center items-center bg-transparent hover:bg-background-hovered">
             <DragHandlerIcon width="16px" height="16px" className="fill-text cursor-grab" />
         </button>
 
-        <Dropdown
-            placement="right"
-            bind:open={dragMenuOpen}
-            on:show={handleDragMenuOpen}
-            class="p-2 bg-white border border-solid border-border rounded-md !text-text !text-sm drop-shadow-md">
-            <DropdownItem on:click={handleDuplicate}>Duplicate</DropdownItem>
-            <DropdownItem on:click={handleCopy}>Copy</DropdownItem>
-            <DropdownItem on:click={handleDelete}>Delete</DropdownItem>
-        </Dropdown>
+        <SharedDropdown placement="right" bind:open={editNodeMenuOpen} on:show={handleDragMenuOpen}>
+            <SharedBubbleMenuItem onClick={handleDuplicate} label="Duplicate"><CmdDuplicateIcon width="16px" height="16px" /></SharedBubbleMenuItem>
+            <SharedBubbleMenuItem onClick={handleCopy} label="Copy"><CmdCopyIcon width="16px" height="16px" /></SharedBubbleMenuItem>
+            <SharedBubbleMenuItem onClick={handleDelete} label="Delete"><CmdTrashIcon width="16px" height="16px" /></SharedBubbleMenuItem>
+        </SharedDropdown>
     </div>
 </div>
 
