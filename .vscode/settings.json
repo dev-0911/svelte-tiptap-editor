@@ -13,5 +13,8 @@
     "files.eol": "\n",
     "[svg]": {
         "editor.defaultFormatter": "jock.svg"
+    },
+    "[svelte]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
     }
 }

@@ -1,15 +1,8 @@
 import type { Editor } from "@tiptap/core";
 import type { Node } from "@tiptap/pm/model";
 import type { NodeSelection } from "@tiptap/pm/state";
-import { writable } from "svelte/store";
-
-type DragNodeType = {
-    node: Node | null;
-    pos: number;
-};
 
 export const useDragItem = (editor: Editor | null) => {
-    // const currentNode = writable<DragNodeType | null>(null);
     let currentNode: Node | null = null;
     let currentNodePos = -1;
 
@@ -18,6 +11,16 @@ export const useDragItem = (editor: Editor | null) => {
             currentNode = data.node;
             currentNodePos = data.pos;
         }
+    };
+
+    const onSelect = () => {
+        if (!editor || !currentNode) return;
+        console.log(currentNodePos);
+        editor.chain().setMeta("hideDragHandle", true);
+        // editor.commands.setNodeSelection(currentNodePos);
+        // editor.commands.setTextSelection({ from: currentNodePos, to: currentNodePos + currentNode?.nodeSize || 0 });
+        editor.commands.setTextSelection({ from: 6, to: 12 });
+        console.log(currentNodePos, currentNode?.nodeSize);
     };
 
     const onDuplicate = () => {
@@ -32,7 +35,6 @@ export const useDragItem = (editor: Editor | null) => {
             .setMeta("hideDragHandle", true)
             .insertContentAt(currentNodePos + (currentNode?.nodeSize || 0), selectedNode.toJSON())
             .run();
-        // }
     };
 
     const onCopy = () => {
@@ -52,13 +54,19 @@ export const useDragItem = (editor: Editor | null) => {
         editor.chain().setMeta("hideDragHandle", true).setNodeSelection(currentNodePos).deleteSelection().run();
     };
 
-    const onSetColor = () => {
+    const onAddTable = () => {
         if (!editor || !currentNode) return;
+
+        editor.chain().setMeta("hideDragHandle", true);
+        editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: false }).run();
     };
 
-    const onSetBgColor = () => {
+    const onAddImage = () => {
         if (!editor || !currentNode) return;
+
+        editor.chain().setMeta("hideDragHandle", true);
+        editor.chain().focus().setImageUpload().run();
     };
 
-    return { currentNode, onNodeChange, onDuplicate, onCopy, onDelete, onSetColor, onSetBgColor };
+    return { currentNode, onNodeChange, onSelect, onDuplicate, onCopy, onDelete, onAddTable, onAddImage };
 };

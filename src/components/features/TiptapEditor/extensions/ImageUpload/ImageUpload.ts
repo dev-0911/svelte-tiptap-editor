@@ -1,6 +1,6 @@
 import { Node } from "@tiptap/core";
-import SvelteNodeViewRenderer from "../NodeViewRenderer/SvelteNodeViewRenderer";
 import { ImageUploadView } from "./view";
+import { SvelteNodeViewRenderer } from "$lib/SvelteNodeViewRender";
 
 declare module "@tiptap/core" {
     interface Commands<ReturnType> {

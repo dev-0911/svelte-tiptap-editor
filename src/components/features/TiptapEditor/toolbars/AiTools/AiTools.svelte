@@ -20,7 +20,7 @@
     import PlusIcon from "$components/assets/svg/editor/PlusIcon.svelte";
     import TrashIcon from "$components/assets/svg/editor/TrashIcon.svelte";
     import { suggestionTemplates, suggestionCommands } from "./constant";
-    import ShareDropdownButton from "$components/shared/ShareDropdownButton/ShareDropdownButton.svelte";
+    import SharedDropdownButton from "$components/shared/SharedDropdownButton/SharedDropdownButton.svelte";
 
     export let editor;
     export let onReplace;
@@ -260,54 +260,66 @@
                 )}>
                 {#if !data}
                     {#if filteredTemplates.includes("autocomplete")}
-                        <ShareDropdownButton command="autocomplete" onClick={handleGenerateFromButton}>
+                        <SharedDropdownButton command="autocomplete" onClick={handleGenerateFromButton}>
                             <ImproveIcon width="16px" height="16px" className="fill-primary" />
                             Autocomplete
-                        </ShareDropdownButton>
+                        </SharedDropdownButton>
+                    {/if}
+                    {#if filteredTemplates.includes("paraphrase")}
+                        <SharedDropdownButton command="paraphrase" onClick={handleGenerateFromButton}>
+                            <ImproveIcon className="fill-primary" />
+                            Paraphrase
+                        </SharedDropdownButton>
+                    {/if}
+                    {#if filteredTemplates.includes("rewrite")}
+                        <SharedDropdownButton command="rewrite" onClick={handleGenerateFromButton}>
+                            <ImproveIcon className="fill-primary" />
+                            Re-write
+                        </SharedDropdownButton>
                     {/if}
                     {#if filteredTemplates.includes("shorten text")}
-                        <ShareDropdownButton command="shorten text" onClick={handleGenerateFromButton}>
-                            <ImproveIcon width="16px" height="16px" className="fill-primary" />
+                        <SharedDropdownButton command="shorten text" onClick={handleGenerateFromButton}>
+                            <ImproveIcon className="fill-primary" />
                             Shorten text
-                        </ShareDropdownButton>
+                        </SharedDropdownButton>
                     {/if}
                     {#if filteredTemplates.includes("lengthen text")}
-                        <ShareDropdownButton command="lengthen text" onClick={handleGenerateFromButton}>
-                            <LongIcon width="16px" height="16px" className="fill-primary" />
+                        <SharedDropdownButton command="lengthen text" onClick={handleGenerateFromButton}>
+                            <LongIcon className="fill-primary" />
                             Lengthen text
-                        </ShareDropdownButton>
+                        </SharedDropdownButton>
                     {/if}
                     {#if filteredTemplates.includes("humanize")}
-                        <ShareDropdownButton command="humanize" onClick={handleGenerateFromButton}>
-                            <ImproveIcon width="16px" height="16px" className="fill-primary" />
+                        <SharedDropdownButton command="humanize" onClick={handleGenerateFromButton}>
+                            <ImproveIcon className="fill-primary" />
                             Humanize
-                        </ShareDropdownButton>
+                        </SharedDropdownButton>
                     {/if}
                     {#if filteredTemplates.includes("improve grammar")}
-                        <ShareDropdownButton command="improve grammar" onClick={handleGenerateFromButton}>
-                            <ImproveIcon width="16px" height="16px" className="fill-primary" />
+                        <SharedDropdownButton command="improve grammar" onClick={handleGenerateFromButton}>
+                            <ImproveIcon className="fill-primary" />
                             Improve grammar
-                        </ShareDropdownButton>
+                        </SharedDropdownButton>
                     {/if}
                     {#if filteredTemplates.includes("simplify")}
-                        <ShareDropdownButton command="simplify" onClick={handleGenerateFromButton}>
-                            <SimplifyIcon width="16px" height="16px" className="fill-primary" />
+                        <SharedDropdownButton command="simplify" onClick={handleGenerateFromButton}>
+                            <SimplifyIcon className="fill-primary" />
                             Simplify
-                        </ShareDropdownButton>
+                        </SharedDropdownButton>
                     {/if}
                     {#if filteredTemplates.includes("summarize")}
-                        <ShareDropdownButton command="summarize" onClick={handleGenerateFromButton}>
-                            <SummarizeIcon width="16px" height="16px" className="fill-primary" />
+                        <SharedDropdownButton command="summarize" onClick={handleGenerateFromButton}>
+                            <SummarizeIcon className="fill-primary" />
                             Summarize
-                        </ShareDropdownButton>
+                        </SharedDropdownButton>
                     {/if}
 
                     {#if filteredTemplates.includes("tone of voice")}
-                        <ShareDropdownButton>
-                            <ReplaceIcon width="16px" height="16px" className="fill-primary" />
+                        <SharedDropdownButton>
+                            <ReplaceIcon className="fill-primary" />
                             <span class="flex-1">Tone of voice</span>
-                            <ChevronRightIcon width="16px" height="16px" />
-                        </ShareDropdownButton>
+                            <ChevronRightIcon />
+                        </SharedDropdownButton>
                         <Dropdown placement="right-start" offset={-8} class="w-[180px] p-1 border border-solid border-border rounded-md drop-shadow-md">
                             <DropdownItem class="px-2 py-1" on:click={handleChangeTone} data-value="Formal">Formal</DropdownItem>
                             <DropdownItem class="px-2 py-1" on:click={handleChangeTone} data-value="Friendly">Friendly</DropdownItem>
@@ -316,11 +328,11 @@
                         </Dropdown>
                     {/if}
                     {#if filteredTemplates.includes("translate")}
-                        <ShareDropdownButton>
-                            <TranslateIcon width="16px" height="16px" className="fill-primary" />
+                        <SharedDropdownButton>
+                            <TranslateIcon className="fill-primary" />
                             <span class="flex-1">Translate</span>
-                            <ChevronRightIcon width="16px" height="16px" />
-                        </ShareDropdownButton>
+                            <ChevronRightIcon />
+                        </SharedDropdownButton>
                         <Dropdown placement="right-start" offset={-8} class="w-[180px] p-1 border border-solid border-border rounded-md drop-shadow-md">
                             <DropdownItem class="px-2 py-1" on:click={handleTranslate} data-value="Chinese">Chinese</DropdownItem>
                             <DropdownItem class="px-2 py-1" on:click={handleTranslate} data-value="English">English</DropdownItem>
@@ -336,34 +348,34 @@
                     {/if}
                 {:else}
                     {#if filteredCommands.includes("replace selection")}
-                        <ShareDropdownButton onClick={handleReplaceContent}>
-                            <CheckIcon width="16px" height="16px" className="fill-primary" />
+                        <SharedDropdownButton onClick={handleReplaceContent}>
+                            <CheckIcon className="fill-primary" />
                             Replace Selection
-                        </ShareDropdownButton>
+                        </SharedDropdownButton>
                     {/if}
                     {#if filteredCommands.includes("insert above")}
-                        <ShareDropdownButton onClick={handleInsertAboveContent}>
-                            <PlusIcon width="16px" height="16px" className="fill-primary" />
+                        <SharedDropdownButton onClick={handleInsertAboveContent}>
+                            <PlusIcon className="fill-primary" />
                             Insert above
-                        </ShareDropdownButton>
+                        </SharedDropdownButton>
                     {/if}
                     {#if filteredCommands.includes("insert below")}
-                        <ShareDropdownButton onClick={handleInsertBelowContent}>
-                            <PlusIcon width="16px" height="16px" className="fill-primary" />
+                        <SharedDropdownButton onClick={handleInsertBelowContent}>
+                            <PlusIcon className="fill-primary" />
                             Insert below
-                        </ShareDropdownButton>
+                        </SharedDropdownButton>
                     {/if}
                     {#if filteredCommands.includes("try again")}
-                        <ShareDropdownButton onClick={handleRetryContent}>
-                            <ReplaceIcon width="16px" height="16px" className="fill-primary" />
+                        <SharedDropdownButton onClick={handleRetryContent}>
+                            <ReplaceIcon className="fill-primary" />
                             Try again
-                        </ShareDropdownButton>
+                        </SharedDropdownButton>
                     {/if}
                     {#if filteredCommands.includes("discard")}
-                        <ShareDropdownButton onClick={handleDiscardContent}>
-                            <TrashIcon width="16px" height="16px" className="fill-primary" />
+                        <SharedDropdownButton onClick={handleDiscardContent}>
+                            <TrashIcon className="fill-primary" />
                             Discard
-                        </ShareDropdownButton>
+                        </SharedDropdownButton>
                     {/if}
                 {/if}
             </div>

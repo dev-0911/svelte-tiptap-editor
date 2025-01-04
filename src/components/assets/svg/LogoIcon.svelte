@@ -1,6 +1,6 @@
 <script>
-    export let width = "20"; // default width
-    export let height = "20"; // default height
+    export let width = "18px"; // default width
+    export let height = "18px"; // default height
 </script>
 
 <svg viewBox="0 0 135 135" {width} {height}>

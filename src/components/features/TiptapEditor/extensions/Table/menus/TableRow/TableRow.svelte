@@ -4,6 +4,9 @@
     import isRowGripSelected from "./utils";
     import SharedBubbleMenu from "$components/shared/SharedBubbleMenu";
     import SharedBubbleMenuItem from "$components/shared/SharedBubbleMenuItem";
+    import TrashIcon from "$components/assets/svg/editor/TrashIcon.svelte";
+    import ArrowDown from "$components/assets/svg/editor/ArrowDown.svelte";
+    import ArrowUp from "$components/assets/svg/editor/ArrowUp.svelte";
     export let editor;
     const pluginKey = "tableRowMenu";
 
@@ -62,9 +65,9 @@
 
 <div bind:this={element}>
     <SharedBubbleMenu>
-        <SharedBubbleMenuItem label="Add row before" onClick={onAddRowBefore} />
-        <SharedBubbleMenuItem label="Add row after" onClick={onAddRowAfter} />
-        <SharedBubbleMenuItem label="Delete row" onClick={onDeleteRow} />
+        <SharedBubbleMenuItem label="Add row before" onClick={onAddRowBefore}><ArrowUp width="18px" height="18px" /></SharedBubbleMenuItem>
+        <SharedBubbleMenuItem label="Add row after" onClick={onAddRowAfter}><ArrowDown width="18px" height="18px" /></SharedBubbleMenuItem>
+        <SharedBubbleMenuItem label="Delete row" onClick={onDeleteRow}><TrashIcon width="18px" height="18px" /></SharedBubbleMenuItem>
     </SharedBubbleMenu>
 </div>
 

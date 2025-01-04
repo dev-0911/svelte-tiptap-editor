@@ -7,23 +7,23 @@
     import StyleSuperscriptIcon from "$components/assets/svg/editor/StyleSuperscriptIcon.svelte";
     import StyleSubscriptIcon from "$components/assets/svg/editor/StyleSubscriptIcon.svelte";
     import Divider from "$components/shared/Divider/Divider.svelte";
-    import SharedToolbarButton from "$components/shared/ShareToolbarButton/SharedToolbarButton.svelte";
+    import SharedToolbarButton from "$components/shared/SharedToolbarButton/SharedToolbarButton.svelte";
 
-    export let editor;
+    const { editor } = $props();
 
-    $: isActiveBold = editor?.isActive("bold");
-    $: isActiveItalic = editor?.isActive("italic");
-    $: isActiveUnderline = editor?.isActive("underline");
-    $: isActiveStrike = editor?.isActive("strike");
-    $: isActiveSuperscript = editor?.isActive("superscript");
-    $: isActiveSubscript = editor?.isActive("subscript");
+    let isActiveBold = $derived(editor?.isActive("bold"));
+    let isActiveItalic = $derived(editor?.isActive("italic"));
+    let isActiveUnderline = $derived(editor?.isActive("underline"));
+    let isActiveStrike = $derived(editor?.isActive("strike"));
+    let isActiveSuperscript = $derived(editor?.isActive("superscript"));
+    let isActiveSubscript = $derived(editor?.isActive("subscript"));
 
-    $: isDisableBold = !editor.can().chain().focus().toggleBold().run();
-    $: isDisableItalic = !editor.can().chain().focus().toggleItalic().run();
-    $: isDisableUnderline = !editor.can().chain().focus().toggleUnderline().run();
-    $: isDisableStrike = !editor.can().chain().focus().toggleStrike().run();
-    $: isDisableSupscript = !editor.can().chain().focus().toggleSuperscript().run();
-    $: isDisableSubscript = !editor.can().chain().focus().toggleSubscript().run();
+    let isDisableBold = $derived(!editor.can().chain().focus().toggleBold().run());
+    let isDisableItalic = $derived(!editor.can().chain().focus().toggleItalic().run());
+    let isDisableUnderline = $derived(!editor.can().chain().focus().toggleUnderline().run());
+    let isDisableStrike = $derived(!editor.can().chain().focus().toggleStrike().run());
+    let isDisableSupscript = $derived(!editor.can().chain().focus().toggleSuperscript().run());
+    let isDisableSubscript = $derived(!editor.can().chain().focus().toggleSubscript().run());
 
     const handleBold = () => {
         if (editor) editor.chain().focus().toggleBold().run();
@@ -51,41 +51,23 @@
 </script>
 
 <div class="flex justify-start items-center gap-1">
-    <SharedToolbarButton onClick={handleBold} actived={isActiveBold} disabled={isDisableBold}>
-        <StyleBoldIcon
-            width="18px"
-            height="18px"
-            className={cn("fill-text-toolbar", isActiveBold && "fill-text-toolbar-selected", isDisableBold && "fill-text-toolbar-disabled")} />
+    <SharedToolbarButton hint="Bold" onclick={handleBold} actived={isActiveBold} disabled={isDisableBold}>
+        <StyleBoldIcon className={cn("fill-text-toolbar", isActiveBold && "fill-text-toolbar-selected", isDisableBold && "fill-text-toolbar-disabled")} />
     </SharedToolbarButton>
-    <SharedToolbarButton onClick={handleItalic} actived={isActiveItalic} disabled={isDisableItalic}>
-        <StyleItalicIcon
-            width="18px"
-            height="18px"
-            className={cn("fill-text-toolbar", isActiveItalic && "fill-text-toolbar-selected", isDisableItalic && "fill-text-toolbar-disabled")} />
+    <SharedToolbarButton hint="Italic" onclick={handleItalic} actived={isActiveItalic} disabled={isDisableItalic}>
+        <StyleItalicIcon className={cn("fill-text-toolbar", isActiveItalic && "fill-text-toolbar-selected", isDisableItalic && "fill-text-toolbar-disabled")} />
     </SharedToolbarButton>
-    <SharedToolbarButton onClick={handleUnderline} actived={isActiveUnderline} disabled={isDisableUnderline}>
-        <StyleUnderlineIcon
-            width="18px"
-            height="18px"
-            className={cn("fill-text-toolbar", isActiveUnderline && "fill-text-toolbar-selected", isDisableUnderline && "fill-text-toolbar-disabled")} />
+    <SharedToolbarButton hint="Underline" onclick={handleUnderline} actived={isActiveUnderline} disabled={isDisableUnderline}>
+        <StyleUnderlineIcon className={cn("fill-text-toolbar", isActiveUnderline && "fill-text-toolbar-selected", isDisableUnderline && "fill-text-toolbar-disabled")} />
     </SharedToolbarButton>
-    <SharedToolbarButton onClick={handleStrike} actived={isActiveStrike} disabled={isDisableStrike}>
-        <StyleStrikeIcon
-            width="18px"
-            height="18px"
-            className={cn("fill-text-toolbar", isActiveStrike && "fill-text-toolbar-selected", isDisableStrike && "fill-text-toolbar-disabled")} />
+    <SharedToolbarButton hint="Strike-throught" onclick={handleStrike} actived={isActiveStrike} disabled={isDisableStrike}>
+        <StyleStrikeIcon className={cn("fill-text-toolbar", isActiveStrike && "fill-text-toolbar-selected", isDisableStrike && "fill-text-toolbar-disabled")} />
     </SharedToolbarButton>
     <Divider />
-    <SharedToolbarButton onClick={handleSuperScript} actived={isActiveSuperscript} disabled={isDisableSupscript}>
-        <StyleSuperscriptIcon
-            width="18px"
-            height="18px"
-            className={cn("fill-text-toolbar", isActiveSuperscript && "fill-text-toolbar-selected", isDisableSupscript && "fill-text-toolbar-disabled")} />
+    <SharedToolbarButton hint="Superscript" onclick={handleSuperScript} actived={isActiveSuperscript} disabled={isDisableSupscript}>
+        <StyleSuperscriptIcon className={cn("fill-text-toolbar", isActiveSuperscript && "fill-text-toolbar-selected", isDisableSupscript && "fill-text-toolbar-disabled")} />
     </SharedToolbarButton>
-    <SharedToolbarButton onClick={handleSubScript} actived={isActiveSubscript} disabled={isDisableSubscript}>
-        <StyleSubscriptIcon
-            width="18px"
-            height="18px"
-            className={cn("fill-text-toolbar", isActiveSubscript && "fill-text-toolbar-selected", isDisableSubscript && "fill-text-toolbar-disabled")} />
+    <SharedToolbarButton hint="Subscript" onclick={handleSubScript} actived={isActiveSubscript} disabled={isDisableSubscript}>
+        <StyleSubscriptIcon className={cn("fill-text-toolbar", isActiveSubscript && "fill-text-toolbar-selected", isDisableSubscript && "fill-text-toolbar-disabled")} />
     </SharedToolbarButton>
 </div>

@@ -1,4 +1,3 @@
-import StarterKit from "@tiptap/starter-kit";
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
@@ -16,20 +15,17 @@ import Heading from "@tiptap/extension-heading";
 import TextStyle from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
 import Highlight from "@tiptap/extension-highlight";
-import CodeBlock from "@tiptap/extension-code-block";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import FontFamily from "@tiptap/extension-font-family";
 import FontSize from "tiptap-extension-font-size";
 import BubbleMenu from "@tiptap/extension-bubble-menu";
-import Link from "@tiptap/extension-link";
+
 import OrderedList from "@tiptap/extension-ordered-list";
 import BulletList from "@tiptap/extension-bullet-list";
 import TaskList from "@tiptap/extension-task-list";
 import TaskItem from "@tiptap/extension-task-item";
 import Typography from "@tiptap/extension-typography";
 import Dropcursor from "@tiptap/extension-dropcursor";
-// import CustomOrderedList from "./CustomOrderList";
-// import CustomBulletList from "./CustomBulletList";
 import { Export } from "@tiptap-pro/extension-export";
 import { Import } from "@tiptap-pro/extension-import";
 import FileHandler from "@tiptap-pro/extension-file-handler";
@@ -43,6 +39,11 @@ import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import { Table, TableCell, TableHeader, TableRow } from "./Table";
 import { ImageBlock } from "./ImageBlock";
 import { ImageUpload } from "./ImageUpload";
+import Emoji from "@tiptap-pro/extension-emoji";
+import Mathematics, { defaultShouldRender } from "@tiptap-pro/extension-mathematics";
+import { uploadImage } from "$lib/api/upload";
+import { Link } from "./Link";
+// import EmojiSuggestion from "./EmojiSuggestion";
 
 const useExtensions = (appId: string, token: string) => {
     const lowlight = createLowlight(all);
@@ -50,15 +51,12 @@ const useExtensions = (appId: string, token: string) => {
     lowlight.register("css", css);
     lowlight.register("js", js);
     lowlight.register("ts", ts);
-    // const doc = new Y.Doc(); // Initialize Y.Doc for shared editing
+
     return [
-        // StarterKit,
         History,
         Document,
         Paragraph,
-        // CustomParagraph,
         Heading,
-        // CustomHeading,
         HardBreak,
         HorizontalRule,
         Text,
@@ -83,9 +81,7 @@ const useExtensions = (appId: string, token: string) => {
         Subscript,
         Superscript,
         OrderedList,
-        // CustomOrderedList,
         BulletList,
-        // CustomBulletList,
         ListItem,
         TaskList,
         TaskItem,
@@ -96,62 +92,6 @@ const useExtensions = (appId: string, token: string) => {
         }),
         Link.configure({
             openOnClick: false,
-            autolink: true,
-            defaultProtocol: "https",
-            protocols: ["http", "https"],
-            isAllowedUri: (url, ctx) => {
-                try {
-                    // construct URL
-                    const parsedUrl = url.includes(":") ? new URL(url) : new URL(`${ctx.defaultProtocol}://${url}`);
-
-                    // use default validation
-                    if (!ctx.defaultValidate(parsedUrl.href)) {
-                        return false;
-                    }
-
-                    // disallowed protocols
-                    const disallowedProtocols = ["ftp", "file", "mailto"];
-                    const protocol = parsedUrl.protocol.replace(":", "");
-
-                    if (disallowedProtocols.includes(protocol)) {
-                        return false;
-                    }
-
-                    // only allow protocols specified in ctx.protocols
-                    const allowedProtocols = ctx.protocols.map((p) => (typeof p === "string" ? p : p.scheme));
-
-                    if (!allowedProtocols.includes(protocol)) {
-                        return false;
-                    }
-
-                    // disallowed domains
-                    const disallowedDomains = ["example-phishing.com", "malicious-site.net"];
-                    const domain = parsedUrl.hostname;
-
-                    if (disallowedDomains.includes(domain)) {
-                        return false;
-                    }
-
-                    // all checks have passed
-                    return true;
-                } catch (error) {
-                    return false;
-                }
-            },
-            shouldAutoLink: (url) => {
-                try {
-                    // construct URL
-                    const parsedUrl = url.includes(":") ? new URL(url) : new URL(`https://${url}`);
-
-                    // only auto-link if the domain is not in the disallowed list
-                    const disallowedDomains = ["example-no-autolink.com", "another-no-autolink.com"];
-                    const domain = parsedUrl.hostname;
-
-                    return !disallowedDomains.includes(domain);
-                } catch (error) {
-                    return false;
-                }
-            },
         }),
 
         // CustomImage,
@@ -166,54 +106,72 @@ const useExtensions = (appId: string, token: string) => {
             appId,
             token,
         }),
+
         FileHandler.configure({
             allowedMimeTypes: ["image/png", "image/jpeg", "image/gif", "image/webp"],
             onDrop: (currentEditor, files, pos) => {
-                files.forEach((file) => {
-                    const fileReader = new FileReader();
+                files.forEach(async (file) => {
+                    const url = await uploadImage(file);
 
-                    fileReader.readAsDataURL(file);
-                    fileReader.onload = () => {
-                        currentEditor
-                            .chain()
-                            .insertContentAt(pos, {
-                                type: "image",
-                                attrs: {
-                                    src: fileReader.result,
-                                },
-                            })
-                            .focus()
-                            .run();
-                    };
+                    currentEditor.chain().setImageBlockAt({ pos, src: url }).focus().run();
                 });
             },
-            onPaste: (currentEditor, files, htmlContent) => {
-                files.forEach((file) => {
-                    if (htmlContent) {
-                        // if there is htmlContent, stop manual insertion & let other extensions handle insertion via inputRule
-                        // you could extract the pasted file from this url string and upload it to a server for example
-                        console.log(htmlContent); // eslint-disable-line no-console
-                        return false;
-                    }
+            onPaste: (currentEditor, files) => {
+                files.forEach(async (file) => {
+                    const url = await uploadImage(file);
 
-                    const fileReader = new FileReader();
-
-                    fileReader.readAsDataURL(file);
-                    fileReader.onload = () => {
-                        currentEditor
-                            .chain()
-                            .insertContentAt(currentEditor.state.selection.anchor, {
-                                type: "image",
-                                attrs: {
-                                    src: fileReader.result,
-                                },
-                            })
-                            .focus()
-                            .run();
-                    };
+                    return currentEditor.chain().setImageBlockAt({ pos: currentEditor.state.selection.anchor, src: url }).focus().run();
                 });
             },
         }),
+        // FileHandler.configure({
+        //     allowedMimeTypes: ["image/png", "image/jpeg", "image/gif", "image/webp"],
+        //     onDrop: (currentEditor, files, pos) => {
+        //         files.forEach((file) => {
+        //             const fileReader = new FileReader();
+
+        //             fileReader.readAsDataURL(file);
+        //             fileReader.onload = () => {
+        //                 currentEditor
+        //                     .chain()
+        //                     .insertContentAt(pos, {
+        //                         type: "image",
+        //                         attrs: {
+        //                             src: fileReader.result,
+        //                         },
+        //                     })
+        //                     .focus()
+        //                     .run();
+        //             };
+        //         });
+        //     },
+        //     onPaste: (currentEditor, files, htmlContent) => {
+        //         files.forEach((file) => {
+        //             if (htmlContent) {
+        //                 // if there is htmlContent, stop manual insertion & let other extensions handle insertion via inputRule
+        //                 // you could extract the pasted file from this url string and upload it to a server for example
+        //                 console.log(htmlContent); // eslint-disable-line no-console
+        //                 return false;
+        //             }
+
+        //             const fileReader = new FileReader();
+
+        //             fileReader.readAsDataURL(file);
+        //             fileReader.onload = () => {
+        //                 currentEditor
+        //                     .chain()
+        //                     .insertContentAt(currentEditor.state.selection.anchor, {
+        //                         type: "image",
+        //                         attrs: {
+        //                             src: fileReader.result,
+        //                         },
+        //                     })
+        //                     .focus()
+        //                     .run();
+        //             };
+        //         });
+        //     },
+        // }),
         // Collaboration.configure({
         //     document: doc, // Configure Y.Doc for collaboration
         // }),
@@ -224,6 +182,16 @@ const useExtensions = (appId: string, token: string) => {
         TableRow,
         ImageBlock,
         ImageUpload,
+        Emoji.configure({
+            enableEmoticons: true,
+            // suggestion: emojiSuggestion,
+        }),
+        Mathematics.configure({
+            shouldRender: (state, pos, node) => {
+                // this will disable rendering for headings & code blocks
+                return defaultShouldRender(state, pos) && node.type.name !== "heading";
+            },
+        }),
     ];
 };
 

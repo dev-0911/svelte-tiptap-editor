@@ -4,6 +4,10 @@
     import { isColumnGripSelected } from "./utils";
     import SharedBubbleMenu from "$components/shared/SharedBubbleMenu";
     import SharedBubbleMenuItem from "$components/shared/SharedBubbleMenuItem";
+    import TrashIcon from "$components/assets/svg/editor/TrashIcon.svelte";
+    import ArrowDown from "$components/assets/svg/editor/ArrowDown.svelte";
+    import ArrowRight from "$components/assets/svg/editor/ArrowRight.svelte";
+    import ArrowLeft from "$components/assets/svg/editor/ArrowLeft.svelte";
 
     const pluginKey = "tableColumnMenu";
 
@@ -63,9 +67,9 @@
 
 <div bind:this={element}>
     <SharedBubbleMenu>
-        <SharedBubbleMenuItem label="Add column before" onClick={onAddColumnBefore} />
-        <SharedBubbleMenuItem label="Add column after" onClick={onAddColumnAfter} />
-        <SharedBubbleMenuItem label="Delete column" onClick={onDeleteColumn} />
+        <SharedBubbleMenuItem label="Add column before" onClick={onAddColumnBefore}><ArrowLeft width="18px" height="18px" /></SharedBubbleMenuItem>
+        <SharedBubbleMenuItem label="Add column after" onClick={onAddColumnAfter}><ArrowRight width="18px" height="18px" /></SharedBubbleMenuItem>
+        <SharedBubbleMenuItem label="Delete column" onClick={onDeleteColumn}><TrashIcon width="18px" height="18px" /></SharedBubbleMenuItem>
     </SharedBubbleMenu>
 </div>
 <!-- 
