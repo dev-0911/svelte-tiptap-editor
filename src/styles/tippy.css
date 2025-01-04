@@ -1,16 +1,3 @@
-.tippy-box[data-theme~="custom"] {
-    width: 100%;
-    max-width: none !important;
-    background-color: tomato;
-    color: yellow;
-}
-
-.tippy-box[data-theme~="custom"],
-.tippy-content * {
-    font-size: 16px !important;
-    text-align: left !important;
-}
-
 .tippy-box[data-theme~="drag-item"] {
     background-color: transparent;
     /* padding: 0; */
@@ -27,7 +14,7 @@
     /* padding: 0; */
 
     .tippy-content * {
-        color: var(--text-color-main) !important;
+        color: black !important;
         font-size: 12px !important;
         text-align: left !important;
     }

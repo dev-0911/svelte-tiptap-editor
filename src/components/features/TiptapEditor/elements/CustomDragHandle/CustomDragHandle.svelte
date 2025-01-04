@@ -1,35 +1,40 @@
 <script>
-    import cn from "classnames";
-    import { onMount, onDestroy } from "svelte";
+    import { useDragItem } from "./hooks/useDragItem";
+
+    import { EmojiButton } from "@joeattardi/emoji-button";
+
+    import { onMount } from "svelte";
     import { DragHandlePlugin } from "@tiptap-pro/extension-drag-handle";
 
-    import DragHandlerIcon from "$components/assets/svg/editor/DragHandlerIcon.svelte";
-    import PlusIcon from "$components/assets/svg/editor/PlusIcon.svelte";
-    import { Button, Dropdown, DropdownItem } from "flowbite-svelte";
-
-    import { useDragItem } from "./hooks/useDragItem";
+    import SharedDropdown from "$components/shared/SharedDropdown/SharedDropdown.svelte";
     import SharedBubbleMenuItem from "$components/shared/SharedBubbleMenuItem/SharedBubbleMenuItem.svelte";
+
+    import PlusIcon from "$components/assets/svg/editor/PlusIcon.svelte";
+    import DragHandlerIcon from "$components/assets/svg/editor/DragHandlerIcon.svelte";
     import InsertTableIcon from "$components/assets/svg/editor/InsertTableIcon.svelte";
     import InsertImageIcon from "$components/assets/svg/editor/InsertImageIcon.svelte";
     import CmdDuplicateIcon from "$components/assets/svg/editor/CmdDuplicateIcon.svelte";
     import CmdCopyIcon from "$components/assets/svg/editor/CmdCopyIcon.svelte";
     import CmdTrashIcon from "$components/assets/svg/editor/CmdTrashIcon.svelte";
-    import SharedDropdown from "$components/shared/SharedDropdown/SharedDropdown.svelte";
+    import EmojiPicker from "$components/shared/EmojiPicker/EmojiPicker.svelte";
+    import EmojiIcon from "$components/assets/svg/editor/EmojiIcon.svelte";
+    import MinusIcon from "$components/assets/svg/editor/MinusIcon.svelte";
 
     export let editor;
     let element;
 
-    $: createNodeMenuOpen = false;
-    $: editNodeMenuOpen = false;
-    $: colorSubmenuOpen = false;
+    let trigger;
+    const picker = new EmojiButton();
 
-    $: {
-        if (editor) {
-            editor.commands.setMeta("lockDragHandle", editNodeMenuOpen || createNodeMenuOpen);
-        }
+    picker.on("emoji", (selection) => {
+        dispatch("change", selection);
+    });
+
+    function togglePicker() {
+        picker.togglePicker(trigger);
     }
 
-    const { onNodeChange, onDuplicate, onCopy, onDelete, onSetColor, onSetBgColor } = useDragItem(editor);
+    const { onNodeChange, onSelect, onDuplicate, onCopy, onDelete, onAddTable, onAddImage } = useDragItem(editor);
 
     onMount(() => {
         const plugin = DragHandlePlugin({
@@ -45,77 +50,117 @@
         return () => editor.unregisterPlugin("dragHandle");
     });
 
-    const handleDragMenuOpen = () => {
-        editor.commands.setMeta("lockDragHandle", true);
+    $: createNodeMenuOpen = false;
+    $: editNodeMenuOpen = false;
+    $: emojiState = false;
+
+    const initState = () => {
+        createNodeMenuOpen = false;
+        editNodeMenuOpen = false;
+        emojiState = false;
+    };
+
+    $: {
+        if (editor) {
+            editor.commands.setMeta("lockDragHandle", editNodeMenuOpen || createNodeMenuOpen);
+        }
+    }
+
+    const handleSelect = () => {
+        onSelect();
+        editor.commands.setMeta("lockDragHandle", false);
+        initState();
     };
 
     const handleDuplicate = () => {
         onDuplicate();
         editor.commands.setMeta("lockDragHandle", false);
-        editNodeMenuOpen = false;
-        createNodeMenuOpen = false;
+        initState();
     };
 
     const handleCopy = () => {
         onCopy();
         editor.commands.setMeta("lockDragHandle", false);
-        editNodeMenuOpen = false;
-        createNodeMenuOpen = false;
+        initState();
     };
 
     const handleDelete = () => {
         onDelete();
         editor.commands.setMeta("lockDragHandle", false);
-        editNodeMenuOpen = false;
-        createNodeMenuOpen = false;
-    };
-
-    const handleColor = () => {
-        editor.commands.setMeta("lockDragHandle", false);
-        editNodeMenuOpen = false;
-        createNodeMenuOpen = false;
+        initState();
     };
 
     const handleAddTable = () => {
-        editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: false }).run();
+        onAddTable();
         editor.commands.setMeta("lockDragHandle", false);
-        editNodeMenuOpen = false;
-        createNodeMenuOpen = false;
+        initState();
     };
 
     const handleAddImage = () => {
-        editor.chain().focus().setImageUpload().run();
+        onAddImage();
         editor.commands.setMeta("lockDragHandle", false);
-        editNodeMenuOpen = false;
-        createNodeMenuOpen = false;
+        initState();
+    };
+
+    const handleAddEmoji = () => {
+        emojiState = true;
+    };
+
+    const handleEmojiClick = (detail) => {
+        const emojiCode = detail.emoji.shortcodes[0];
+        if (emojiCode) {
+            editor.chain().focus().setEmoji(emojiCode).run();
+        }
+        editor.commands.setMeta("lockDragHandle", false);
+        initState();
+    };
+
+    const handleAddHorizon = () => {
+        editor.chain().focus().setHorizontalRule().run();
+        editor.commands.setMeta("lockDragHandle", false);
+        initState();
     };
 </script>
 
 <div bind:this={element} draggable="false" style="pointer-events: none;">
     <div class="flex justify-start items-center gap-1">
-        <div draggable="false" class="p-1 flex justify-center items-center bg-transparent hover:bg-background-hovered">
+        <button draggable="false" class="p-1 flex justify-center items-center bg-transparent hover:bg-background-hovered">
             <PlusIcon width="16px" height="16px" className="fill-text cursor-pointer" />
-        </div>
+        </button>
 
-        <SharedDropdown placement="right" bind:open={createNodeMenuOpen} on:show={handleDragMenuOpen} className="w-44">
-            <SharedBubbleMenuItem onClick={handleAddTable} label="Insert a table">
-                <InsertTableIcon width="16px" height="16px" />
-            </SharedBubbleMenuItem>
-            <SharedBubbleMenuItem onClick={handleAddImage} label="Insert an image">
-                <InsertImageIcon width="16px" height="16px" />
-            </SharedBubbleMenuItem>
+        <SharedDropdown placement="right-start" bind:open={createNodeMenuOpen} className="w-44">
+            {#if !emojiState}
+                <SharedBubbleMenuItem onClick={handleAddTable} label="Tables">
+                    <InsertTableIcon />
+                </SharedBubbleMenuItem>
+                <SharedBubbleMenuItem onClick={handleAddImage} label="Images">
+                    <InsertImageIcon />
+                </SharedBubbleMenuItem>
+                <SharedBubbleMenuItem onClick={handleAddEmoji} label="Emojis">
+                    <EmojiIcon />
+                </SharedBubbleMenuItem>
+
+                <!-- <SharedBubbleMenuItem onClick={handleAddImage} label="Math">
+                    <InsertImageIcon />
+                </SharedBubbleMenuItem> -->
+                <SharedBubbleMenuItem onClick={handleAddHorizon} label="Horizontal rule">
+                    <MinusIcon />
+                </SharedBubbleMenuItem>
+            {:else}
+                <EmojiPicker onClick={handleEmojiClick} />
+            {/if}
         </SharedDropdown>
 
         <button draggable="true" class="p-1 flex justify-center items-center bg-transparent hover:bg-background-hovered">
-            <DragHandlerIcon width="16px" height="16px" className="fill-text cursor-grab" />
+            <DragHandlerIcon className="fill-text cursor-grab" />
         </button>
 
-        <SharedDropdown placement="right" bind:open={editNodeMenuOpen} on:show={handleDragMenuOpen}>
-            <SharedBubbleMenuItem onClick={handleDuplicate} label="Duplicate"><CmdDuplicateIcon width="16px" height="16px" /></SharedBubbleMenuItem>
-            <SharedBubbleMenuItem onClick={handleCopy} label="Copy"><CmdCopyIcon width="16px" height="16px" /></SharedBubbleMenuItem>
-            <SharedBubbleMenuItem onClick={handleDelete} label="Delete"><CmdTrashIcon width="16px" height="16px" /></SharedBubbleMenuItem>
+        <SharedDropdown placement="right-start" bind:open={editNodeMenuOpen}>
+            <SharedBubbleMenuItem onClick={handleSelect} label="Select"><CmdDuplicateIcon /></SharedBubbleMenuItem>
+            <!-- <SharedBubbleMenuItem onClick={handleDuplicate} label="Comments"><CmdDuplicateIcon /></SharedBubbleMenuItem> -->
+            <SharedBubbleMenuItem onClick={handleDuplicate} label="Duplicate"><CmdDuplicateIcon /></SharedBubbleMenuItem>
+            <SharedBubbleMenuItem onClick={handleCopy} label="Copy"><CmdCopyIcon /></SharedBubbleMenuItem>
+            <SharedBubbleMenuItem onClick={handleDelete} label="Delete"><CmdTrashIcon /></SharedBubbleMenuItem>
         </SharedDropdown>
     </div>
 </div>
-
-<!-- transition:fade={{ duration: 200 }} -->

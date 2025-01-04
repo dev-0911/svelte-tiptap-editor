@@ -1,6 +1,9 @@
 import { mount } from "svelte";
+import "katex/dist/katex.min.css";
+
 import "./styles/global.css";
 import "./styles/tippy.css";
+import "./styles/editor.css";
 import "./styles/tiptap.css";
 
 import App from "./App.svelte";

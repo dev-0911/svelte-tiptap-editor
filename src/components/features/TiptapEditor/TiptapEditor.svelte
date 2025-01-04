@@ -10,10 +10,26 @@
     import TableColumn from "./extensions/Table/menus/TableColumn/TableColumn.svelte";
     import TableRow from "./extensions/Table/menus/TableRow/TableRow.svelte";
     import ImageBlockMenu from "./extensions/ImageBlock/components/ImageBlockMenu.svelte";
+    import EmojiPicker from "$components/shared/EmojiPicker/EmojiPicker.svelte";
 
     // Initial content for the editor
     const content = `<h1>One morning, when Gregor Samsa woke from troubled 
         dreams.</h1>
+      <ul>
+        <li>$\\sin(x)$</li>
+        <li>$\\cos(x)$</li>
+        <li>$\\tan(x)$</li>
+        <li>$\\log(x)$</li>
+        <li>$\\ln(x)$</li>
+        <li>$\\sqrt{x}$</li>
+        <li>$\\sum_{i=0}^n x_i$</li>
+        <li>$\\int_a^b x^2 dx$</li>
+        <li>$\\frac{1}{x}$</li>
+        <li>$\\binom{n}{k}$</li>
+        <li>$\\sqrt[n]{x}$</li>
+        <li>$\\left(\\frac{1}{x}\\right)$</li>
+        <li>$\\left\\{\\begin{matrix}x&\\text{if }x>0\\\\0&\\text{otherwise}\\end{matrix}\\right.$</li>
+      </ul>
         <h2>The bedding was hardly able to cover it.</h2>
         <p>One morning, when Gregor Samsa woke from troubled 
 dreams, he found himself transformed in his bed into 
@@ -126,8 +142,8 @@ between its four familiar walls.</p>
     });
 </script>
 
-<div class="w-screen h-screen p-4 bg-background text-text">
-    <div class="mx-20 h-full flex flex-col border border-border-toolbar text-text overflow-hidden">
+<div class="w-screen h-screen bg-background text-text">
+    <div class="h-full flex flex-col border border-border-toolbar text-text overflow-hidden">
         {#if editor}
             <Toolbar className="flex-0 relative z-10 w-full bg-background-toolbar border-b border-b-border-toolbar" {editor} {onInsertBelow} {onInsertAbove} {onReplace} />
             <CustomDragHandle {editor} />
@@ -141,4 +157,4 @@ between its four familiar walls.</p>
         <div class="flex-1 relative z-0 w-full px-10 py-5 overflow-y-auto scrollbar" bind:this={element} spellcheck="false"></div>
     </div>
 </div>
-<!--, -->
+<!-- <EmojiPicker /> -->

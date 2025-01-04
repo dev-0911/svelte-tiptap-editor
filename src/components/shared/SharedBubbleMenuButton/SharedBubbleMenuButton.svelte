@@ -10,4 +10,4 @@
     {/if}
 </button>
 
-<Tooltip class="text-white">{label}</Tooltip>
+<Tooltip class="text-white" style={{ color: "#fff" }}>{label}</Tooltip>

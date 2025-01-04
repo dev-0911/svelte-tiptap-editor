@@ -1,17 +1,15 @@
 <script>
     import cn from "classnames";
-    import ExportWordIcon from "$components/assets/svg/editor/ExportWordIcon.svelte";
-    import ImportWordIcon from "$components/assets/svg/editor/ImportWordIcon.svelte";
-    import SharedToolbarButton from "$components/shared/ShareToolbarButton/SharedToolbarButton.svelte";
+    import SharedToolbarButton from "$components/shared/SharedToolbarButton/SharedToolbarButton.svelte";
     import CmdDownloadIcon from "$components/assets/svg/editor/CmdDownloadIcon.svelte";
     import CmdUploadIcon from "$components/assets/svg/editor/CmdUploadIcon.svelte";
 
-    export let editor;
+    const { editor } = $props();
+
+    let isLoading = $state(false);
+    let error = $state(null);
 
     let fileInput;
-
-    let isLoading = false;
-    let error;
 
     function ExportToWord() {
         editor
@@ -73,12 +71,12 @@
 </script>
 
 <div class="flex justify-start items-center gap-1">
-    <SharedToolbarButton onClick={ImportButtonClick} disabled={!editor}>
-        <CmdUploadIcon width="18px" height="18px" className={cn("fill-text-toolbar", !editor && "fill-text-toolbar-disabled")} />
-        <input type="file" accept=".docx" on:change={ImportFromInput} bind:this={fileInput} class="hidden" />
+    <input type="file" accept=".docx" onchange={ImportFromInput} bind:this={fileInput} class="hidden" />
+    <SharedToolbarButton hint="Import from docx" onclick={ImportButtonClick} disabled={!editor}>
+        <CmdUploadIcon className={cn("fill-text-toolbar", !editor && "fill-text-toolbar-disabled")} />
     </SharedToolbarButton>
 
-    <SharedToolbarButton onClick={ExportToWord} disabled={!editor}>
-        <CmdDownloadIcon width="18px" height="18px" className={cn("fill-text-toolbar", !editor && "fill-text-toolbar-disabled")} />
+    <SharedToolbarButton hint="Export as docx" onclick={ExportToWord} disabled={!editor}>
+        <CmdDownloadIcon className={cn("fill-text-toolbar", !editor && "fill-text-toolbar-disabled")} />
     </SharedToolbarButton>
 </div>

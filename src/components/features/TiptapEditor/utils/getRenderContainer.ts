@@ -1,13 +1,8 @@
 import type { Editor } from "@tiptap/core";
 
 export const getRenderContainer = (editor: Editor, nodeType: string) => {
-    const {
-        view,
-        state: {
-            selection: { from },
-        },
-    } = editor;
-
+    const { view } = editor;
+    const from = editor.state.selection.from;
     const elements = document.querySelectorAll(".has-focus");
     const elementCount = elements.length;
     const innermostNode = elements[elementCount - 1];

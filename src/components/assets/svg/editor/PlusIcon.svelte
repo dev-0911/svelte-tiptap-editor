@@ -1,8 +1,8 @@
 <script>
     export let className;
     export let color = "currentColor"; // default color
-    export let width = "20"; // default width
-    export let height = "20"; // default height
+    export let width = "18px"; // default width
+    export let height = "18px"; // default height
 </script>
 
 <svg viewBox="0 0 24 24" {width} {height} fill={color} class={className}>

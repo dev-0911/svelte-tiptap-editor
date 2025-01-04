@@ -2,6 +2,7 @@
 // import toast from "react-hot-toast";
 // import { API } from "@/lib/api";
 
+import { uploadImage } from "$lib/api/upload";
 import type { DragEventHandler } from "svelte/elements";
 
 export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) => {
@@ -10,25 +11,12 @@ export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) =
 
     const uploadFile = async (file: File) => {
         loading = true;
-        try {
-            // const url = await API.uploadImage(file);
-            // onUpload(url);
-        } catch (errPayload: any) {
-            const error = errPayload?.response?.data?.error || "Something went wrong";
-            // toast.error(error);
-        }
+        const url = await uploadImage(file);
+        onUpload(url);
         loading = false;
     };
 
     return { loading, uploadFile };
-};
-
-export const useFileUpload = () => {
-    // const fileInput = useRef<HTMLInputElement>(null);
-    // const handleUploadClick = () => {
-    //     fileInput.current?.click();
-    // };
-    // return { ref: fileInput, handleUploadClick };
 };
 
 export const useDropZone = ({ uploader }: { uploader: (file: File) => void }) => {

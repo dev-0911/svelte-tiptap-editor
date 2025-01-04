@@ -1,5 +1,4 @@
 <script>
-    import cn from "classnames";
     import { Button, Dropdown, DropdownDivider, DropdownItem } from "flowbite-svelte";
     import FormattingParagraphIcon from "$components/assets/svg/editor/FormattingParagraphIcon.svelte";
     import UListIcon from "$components/assets/svg/editor/UListIcon.svelte";

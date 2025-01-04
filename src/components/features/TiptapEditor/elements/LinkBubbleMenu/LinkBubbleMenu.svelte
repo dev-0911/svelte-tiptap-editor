@@ -6,7 +6,6 @@
     import CmdEditIcon from "$components/assets/svg/editor/CmdEditIcon.svelte";
     import CmdUnlinkIcon from "$components/assets/svg/editor/CmdUnlinkIcon.svelte";
     import Divider from "$components/shared/Divider/Divider.svelte";
-    import SharedToolbarButton from "$components/shared/ShareToolbarButton/SharedToolbarButton.svelte";
     import CmdLinkIcon from "$components/assets/svg/editor/CmdLinkIcon.svelte";
     import SharedBubbleMenu from "$components/shared/SharedBubbleMenu/SharedBubbleMenu.svelte";
     import SharedBubbleMenuButton from "$components/shared/SharedBubbleMenuButton/SharedBubbleMenuButton.svelte";
@@ -74,7 +73,7 @@
         <div class="border border-border-toolbar bg-background-toolbar p-2 rounded-md">
             <div class="mb-2 flex justify-start items-center gap-2">
                 <Input id="input-addon" name="link-url" type="url" placeholder="Enter URL" size="sm" class="bg-white text-text" bind:value={inputValue}>
-                    <CmdLinkIcon slot="left" width="16px" height="16px" />
+                    <CmdLinkIcon slot="left" />
                 </Input>
 
                 <Button class="bg-text" size="sm" disabled={!isValidUrl} on:click={handleSet}>Set</Button>
@@ -85,14 +84,14 @@
         </div>
     {:else}
         <SharedBubbleMenu>
-            <div class="flex justify-start items-center gap-1">
+            <div class="flex justify-start items-center gap-2">
                 <a href={sanitizedLink} target="_blank" class="text-sm underline break-all">
                     {url}
                 </a>
 
                 <Divider />
-                <SharedBubbleMenuButton onClick={handleEdit} label="Edit link"><CmdEditIcon width="16px" height="16px" /></SharedBubbleMenuButton>
-                <SharedBubbleMenuButton onClick={handleRemove} label="Remove link"><CmdUnlinkIcon width="16px" height="16px"></CmdUnlinkIcon></SharedBubbleMenuButton>
+                <SharedBubbleMenuButton onClick={handleEdit} label="Edit link"><CmdEditIcon /></SharedBubbleMenuButton>
+                <SharedBubbleMenuButton onClick={handleRemove} label="Remove link"><CmdUnlinkIcon /></SharedBubbleMenuButton>
             </div>
         </SharedBubbleMenu>
     {/if}

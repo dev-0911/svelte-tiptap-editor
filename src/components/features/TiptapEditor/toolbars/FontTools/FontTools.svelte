@@ -1,6 +1,7 @@
 <script>
     import cn from "classnames";
-    import { Dropdown, DropdownDivider, DropdownItem } from "flowbite-svelte";
+    import { Dropdown, DropdownDivider, DropdownItem, Tooltip } from "flowbite-svelte";
+    import SharedToolbarButton from "$components/shared/SharedToolbarButton/SharedToolbarButton.svelte";
     import ChevronDownIcon from "$components/assets/svg/editor/ChevronDownIcon.svelte";
     import FontSizeIcon from "$components/assets/svg/editor/FontSizeIcon.svelte";
     import FontFamilyIcon from "$components/assets/svg/editor/FontFamilyIcon.svelte";
@@ -8,14 +9,8 @@
     import StyleEraserIcon from "$components/assets/svg/editor/StyleEraserIcon.svelte";
     import StyleFontColorIcon from "$components/assets/svg/editor/StyleFontColorIcon.svelte";
     import ColorItem from "$components/assets/svg/editor/ColorItem.svelte";
-    import SharedToolbarButton from "$components/shared/ShareToolbarButton/SharedToolbarButton.svelte";
 
-    export let editor;
-
-    let familyDropdownState = false;
-    let sizeDropdownState = false;
-    let highlightDropdownState = false;
-    let fontColorDropdownState = false;
+    import SharedBubbleMenuItem from "$components/shared/SharedBubbleMenuItem/SharedBubbleMenuItem.svelte";
 
     const fontFamilies = [
         {
@@ -95,10 +90,17 @@
         { value: "#DAA520", name: "Goldenrod " },
     ];
 
-    $: selectedFamily = fontFamilies?.find(({ value }) => editor?.isActive("textStyle", { fontFamily: value }));
-    $: selectedSize = fontSizes?.find(({ value }) => editor?.isActive("textStyle", { fontSize: value }));
-    $: selectedFontColor = fontColors?.find(({ value }) => editor?.isActive("textStyle", { color: value }));
-    $: selectedHighlight = highlights?.find(({ value }) => editor?.isActive("highlight", { color: value }));
+    const { editor } = $props();
+
+    let familyDropdownState = $state(false);
+    let sizeDropdownState = $state(false);
+    let highlightDropdownState = $state(false);
+    let fontColorDropdownState = $state(false);
+
+    let selectedFamily = $derived(fontFamilies?.find(({ value }) => editor?.isActive("textStyle", { fontFamily: value })));
+    let selectedSize = $derived(fontSizes?.find(({ value }) => editor?.isActive("textStyle", { fontSize: value })));
+    let selectedFontColor = $derived(fontColors?.find(({ value }) => editor?.isActive("textStyle", { color: value })));
+    let selectedHighlight = $derived(highlights?.find(({ value }) => editor?.isActive("highlight", { color: value })));
 
     const onSetFamily = (value) => {
         editor?.chain()?.focus()?.setFontFamily(value).run();
@@ -134,16 +136,18 @@
 <div class="flex justify-start items-center gap-1">
     <div class="flex-0">
         <SharedToolbarButton className="w-44 text-left text-text-toolbar">
-            <div class="w-full flex justify-start items-center gap-1">
+            <div class="w-full flex items-center justify-start gap-1">
                 <div class="flex-0">
-                    <FontFamilyIcon width="18px" height="18px" className="fill-text-toolbar" />
+                    <FontFamilyIcon className="fill-text-toolbar" />
                 </div>
                 <span class="flex-1">{selectedFamily?.name || "Default"}</span>
-                <ChevronDownIcon width="18px" height="18px" className="fill-text-toolbar" />
+                <div class="flex-0">
+                    <ChevronDownIcon className="fill-text-toolbar" />
+                </div>
             </div>
         </SharedToolbarButton>
 
-        <Dropdown placement="bottom-start" class="w-44 bg-background-toolbar text-text-toolbar border border-border-toolbar rounded-sm" bind:open={familyDropdownState}>
+        <Dropdown placement="bottom-start" class="w-44  bg-background-toolbar text-text-toolbar border border-border-toolbar rounded-sm" open={familyDropdownState}>
             {#each fontFamilies as fontFamily}
                 <DropdownItem
                     class={cn(
@@ -156,18 +160,19 @@
             {/each}
         </Dropdown>
     </div>
+    <Tooltip>Font family</Tooltip>
 
     <div class="flex-0">
         <SharedToolbarButton className="w-12 text-text-toolbar" actived={!!selectedSize}>
-            <div class="w-full flex items-start justify-center gap-1">
+            <div class="w-full flex items-center justify-start gap-1">
                 <div class="flex-0">
-                    <FontSizeIcon width="18px" height="18px" className="fill-text-toolbar" />
+                    <FontSizeIcon className="fill-text-toolbar" />
                 </div>
                 <!-- {#if selectedSize}
                     <span class="flex-1">{selectedSize?.name}</span>
                 {/if} -->
                 <div class="flex-0">
-                    <ChevronDownIcon width="18px" height="18px" className="fill-text-toolbar" />
+                    <ChevronDownIcon className="fill-text-toolbar" />
                 </div>
             </div>
         </SharedToolbarButton>
@@ -184,16 +189,18 @@
             {/each}
         </Dropdown>
     </div>
+    <Tooltip>Font size</Tooltip>
 
     <div>
-        <SharedToolbarButton class="w-12 text-text-toolbar" actived={!!selectedFontColor}>
-            <StyleFontColorIcon
-                width="18px"
-                height="18px"
-                color={selectedFontColor && selectedFontColor.value}
-                className={!selectedFontColor && "fill-text-toolbar"}
-                secondColor="#6d868a" />
-            <ChevronDownIcon width="18px" height="18px" className="fill-text-toolbar" />
+        <SharedToolbarButton className="w-12" actived={!!selectedFontColor}>
+            <div class="w-full flex items-center justify-start gap-1">
+                <div class="flex-0">
+                    <StyleFontColorIcon color={selectedFontColor && selectedFontColor.value} className={!selectedFontColor && "fill-text-toolbar"} secondColor="#6d868a" />
+                </div>
+                <div class="flex-0">
+                    <ChevronDownIcon className="fill-text-toolbar" />
+                </div>
+            </div>
         </SharedToolbarButton>
 
         <Dropdown placement="bottom-start" class="w-full bg-background-toolbar text-text-toolbar border border-border-toolbar rounded-sm" bind:open={fontColorDropdownState}>
@@ -216,16 +223,18 @@
             </DropdownItem>
         </Dropdown>
     </div>
+    <Tooltip>Font color</Tooltip>
 
     <div>
         <SharedToolbarButton className="w-12" actived={!!selectedHighlight}>
-            <StyleHighlightIcon
-                width="18px"
-                height="18px"
-                color={selectedHighlight && selectedHighlight.value}
-                className={!selectedHighlight && "fill-text-toolbar"}
-                secondColor="#6d868a" />
-            <ChevronDownIcon width="18px" height="18px" className="fill-text-toolbar" />
+            <div class="w-full flex items-center justify-start gap-1">
+                <div class="flex-0">
+                    <StyleHighlightIcon color={selectedHighlight && selectedHighlight.value} className={!selectedHighlight && "fill-text-toolbar"} secondColor="#6d868a" />
+                </div>
+                <div class="flex-0">
+                    <ChevronDownIcon className="fill-text-toolbar" />
+                </div>
+            </div>
         </SharedToolbarButton>
 
         <Dropdown placement="bottom-start" class="w-12 bg-background-toolbar text-text-toolbar border border-border-toolbar rounded-sm" bind:open={highlightDropdownState}>
@@ -236,7 +245,7 @@
                         selectedHighlight?.value === highlight.value ? "bg-background-toolbar-focused" : "bg-background-toolbar",
                     )}
                     on:click={() => onSetHighlight(highlight.value)}>
-                    <ColorItem width="20px" height="20px" color={highlight.value} />
+                    <ColorItem color={highlight.value} />
                 </DropdownItem>
             {/each}
             <DropdownDivider class="m-0 bg-border-toolbar" />
@@ -244,8 +253,9 @@
                 class="px-3 py-1 flex justify-start items-center gap-1 hover:bg-background-toolbar-hovered"
                 disabled={!editor?.isActive("highlight")}
                 on:click={() => onUnsetHighlight()}>
-                <StyleEraserIcon width="20px" height="20px" className="fill-text-toolbar" />
+                <StyleEraserIcon className="fill-text-toolbar" />
             </DropdownItem>
         </Dropdown>
     </div>
+    <Tooltip>Highlight</Tooltip>
 </div>

@@ -3,11 +3,13 @@
     import { BubbleMenuPlugin } from "@tiptap/extension-bubble-menu";
     import { onMount } from "svelte";
     import SharedBubbleMenu from "$components/shared/SharedBubbleMenu";
-    import SharedBubbleMenuButton from "$components/shared/SharedBubbleMenuButton/SharedBubbleMenuButton.svelte";
+    import SharedBubbleMenuButton from "$components/shared/SharedBubbleMenuButton";
     import getRenderContainer from "$components/features/TiptapEditor/utils/getRenderContainer";
     import { sticky } from "tippy.js";
+    import { isActive } from "@tiptap/core";
 
-    const pluginKey = `imageBlockMenu-${uuid()}`;
+    const pluginKey = `imageBlockMenu`;
+    // const pluginKey = `imageBlockMenu-${uuid()}`;
 
     export let editor;
     let element;
@@ -27,32 +29,26 @@
             element,
             tippyOptions: {
                 theme: "bubble-menu",
-                placement: "top-start",
+                offset: [0, 8],
+                placement: "bottom-start",
+                arrow: true,
+                appendTo: () => {
+                    return document.body;
+                },
                 popperOptions: {
                     modifiers: [{ name: "flip", enabled: false }],
                 },
-                appendTo: () => {
-                    return document.getElementById("PORTAL-ROOT");
+                getReferenceClientRect,
+                onCreate: (instance) => {
+                    tippyInstance = instance;
                 },
-                popperOptions: {
-                    arrow: false,
-
-                    offset: [0, 8],
-                    popperOptions: {
-                        modifiers: [{ name: "flip", enabled: false }],
-                    },
-                    getReferenceClientRect,
-                    onCreate: (instance) => {
-                        tippyInstance = instance;
-                    },
-                    appendTo: () => {
-                        return appendTo?.current;
-                    },
-                    plugins: [sticky],
-                    sticky: "popper",
-                },
+                // onHidden: () => {
+                //     showEdit = false;
+                // },
+                plugins: [sticky],
+                sticky: "popper",
             },
-            shouldShow: ({ view, state, from }) => {
+            shouldShow: ({ editor }) => {
                 const isActive = editor.isActive("imageBlock");
 
                 return isActive;
@@ -94,7 +90,8 @@
 </script>
 
 <div bind:this={element}>
-    <SharedBubbleMenu>
+    12345678901234567890123456789012345678901234567890123456789012345678901234567890
+    <!-- <SharedBubbleMenu>
         <SharedBubbleMenuButton tooltip="Align image left" active={isImageLeft} onClick={onAlignImageLeft}>left</SharedBubbleMenuButton>
         <SharedBubbleMenuButton tooltip="Align image center" active={isImageCenter} onClick={onAlignImageCenter}>center</SharedBubbleMenuButton>
         <SharedBubbleMenuButton tooltip="Align image right" active={isImageRight} onClick={onAlignImageRight}>right</SharedBubbleMenuButton>
@@ -110,5 +107,5 @@
                 value={currentValue} />
             <span class="text-xs font-semibold text-neutral-500 select-none">{value}%</span>
         </div>
-    </SharedBubbleMenu>
+    </SharedBubbleMenu> -->
 </div>

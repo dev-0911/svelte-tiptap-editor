@@ -1,8 +1,9 @@
 import { mergeAttributes, type Range } from "@tiptap/core";
 
 import { Image } from "../Image";
-import SvelteNodeViewRenderer from "../NodeViewRenderer/SvelteNodeViewRenderer";
+
 import ImageBlockView from "./components/ImageBlockView.svelte";
+import { SvelteNodeViewRenderer } from "$lib/SvelteNodeViewRender";
 
 declare module "@tiptap/core" {
     interface Commands<ReturnType> {
