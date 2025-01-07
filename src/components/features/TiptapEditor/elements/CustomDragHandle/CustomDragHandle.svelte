@@ -13,17 +13,19 @@
     import DragHandlerIcon from "$components/assets/svg/editor/DragHandlerIcon.svelte";
     import InsertTableIcon from "$components/assets/svg/editor/InsertTableIcon.svelte";
     import InsertImageIcon from "$components/assets/svg/editor/InsertImageIcon.svelte";
+    import CmdSelectIcon from "$components/assets/svg/editor/CmdSelectIcon.svelte";
     import CmdDuplicateIcon from "$components/assets/svg/editor/CmdDuplicateIcon.svelte";
     import CmdCopyIcon from "$components/assets/svg/editor/CmdCopyIcon.svelte";
     import CmdTrashIcon from "$components/assets/svg/editor/CmdTrashIcon.svelte";
     import EmojiPicker from "$components/shared/EmojiPicker/EmojiPicker.svelte";
     import EmojiIcon from "$components/assets/svg/editor/EmojiIcon.svelte";
     import MinusIcon from "$components/assets/svg/editor/MinusIcon.svelte";
+    import CommentIcon from "$components/assets/svg/editor/CommentIcon.svelte";
 
-    export let editor;
+    let { editor, onComments } = $props();
     let element;
-
     let trigger;
+
     const picker = new EmojiButton();
 
     picker.on("emoji", (selection) => {
@@ -50,9 +52,10 @@
         return () => editor.unregisterPlugin("dragHandle");
     });
 
-    $: createNodeMenuOpen = false;
-    $: editNodeMenuOpen = false;
-    $: emojiState = false;
+    let createNodeMenuOpen = $state(false);
+    let editNodeMenuOpen = $state(false);
+
+    let emojiState = $state(false);
 
     const initState = () => {
         createNodeMenuOpen = false;
@@ -60,16 +63,23 @@
         emojiState = false;
     };
 
-    $: {
-        if (editor) {
-            editor.commands.setMeta("lockDragHandle", editNodeMenuOpen || createNodeMenuOpen);
-        }
-    }
+    // $effect(() => {
+    //     if (editor) {
+    //         editor.commands.setMeta("lockDragHandle", editNodeMenuOpen || createNodeMenuOpen);
+    //     }
+    // });
 
     const handleSelect = () => {
         onSelect();
         editor.commands.setMeta("lockDragHandle", false);
         initState();
+    };
+
+    const handleComments = () => {
+        onComments(() => {
+            editor.commands.setMeta("lockDragHandle", false);
+            initState();
+        });
     };
 
     const handleDuplicate = () => {
@@ -156,8 +166,8 @@
         </button>
 
         <SharedDropdown placement="right-start" bind:open={editNodeMenuOpen}>
-            <SharedBubbleMenuItem onClick={handleSelect} label="Select"><CmdDuplicateIcon /></SharedBubbleMenuItem>
-            <!-- <SharedBubbleMenuItem onClick={handleDuplicate} label="Comments"><CmdDuplicateIcon /></SharedBubbleMenuItem> -->
+            <SharedBubbleMenuItem onClick={handleSelect} label="Select"><CmdSelectIcon /></SharedBubbleMenuItem>
+            <SharedBubbleMenuItem onClick={handleComments} label="Comments"><CommentIcon /></SharedBubbleMenuItem>
             <SharedBubbleMenuItem onClick={handleDuplicate} label="Duplicate"><CmdDuplicateIcon /></SharedBubbleMenuItem>
             <SharedBubbleMenuItem onClick={handleCopy} label="Copy"><CmdCopyIcon /></SharedBubbleMenuItem>
             <SharedBubbleMenuItem onClick={handleDelete} label="Delete"><CmdTrashIcon /></SharedBubbleMenuItem>

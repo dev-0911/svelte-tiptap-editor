@@ -64,6 +64,9 @@
     --border-color-toolbar-selected: #ffffff;
     --border-color-toolbar-disabled: #ffffff;
 
+    --yellow: #facc1566;
+    --yellow-contrast: #facc15;
+
     --title-font-family: "Helvetica", sans-serif;
 
     /* --border-green: 3px solid #05d677;

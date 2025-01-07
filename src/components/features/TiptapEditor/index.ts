@@ -1,2 +1,2 @@
 export { default } from "./TiptapEditor.svelte";
-export * from "./useTiptapEditor";
+export * from "./hooks";

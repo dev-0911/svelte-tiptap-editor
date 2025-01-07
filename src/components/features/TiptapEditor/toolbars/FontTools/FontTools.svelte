@@ -3,92 +3,15 @@
     import { Dropdown, DropdownDivider, DropdownItem, Tooltip } from "flowbite-svelte";
     import SharedToolbarButton from "$components/shared/SharedToolbarButton/SharedToolbarButton.svelte";
     import ChevronDownIcon from "$components/assets/svg/editor/ChevronDownIcon.svelte";
-    import FontSizeIcon from "$components/assets/svg/editor/FontSizeIcon.svelte";
+    // import FontSizeIcon from "$components/assets/svg/editor/FontSizeIcon.svelte";
     import FontFamilyIcon from "$components/assets/svg/editor/FontFamilyIcon.svelte";
     import StyleHighlightIcon from "$components/assets/svg/editor/StyleHighlightIcon.svelte";
     import StyleEraserIcon from "$components/assets/svg/editor/StyleEraserIcon.svelte";
     import StyleFontColorIcon from "$components/assets/svg/editor/StyleFontColorIcon.svelte";
     import ColorItem from "$components/assets/svg/editor/ColorItem.svelte";
-
-    import SharedBubbleMenuItem from "$components/shared/SharedBubbleMenuItem/SharedBubbleMenuItem.svelte";
-
-    const fontFamilies = [
-        {
-            name: "Inter",
-            value: "Inter",
-        },
-        {
-            name: "Comic Sans",
-            value: "Comic Sans MS, Comic Sans",
-        },
-        {
-            name: "Serif",
-            value: "serif",
-        },
-        {
-            name: "Cursive",
-            value: "cursive",
-        },
-        {
-            name: "CSS variable",
-            value: "var(--title-font-family)",
-        },
-        {
-            name: "Comic Sans quoted",
-            value: '"Comic Sans MS", "Comic Sans"',
-        },
-        {
-            name: "Monospace",
-            value: "monospace",
-        },
-        {
-            name: "Exo 2",
-            value: "Exo 2",
-        },
-    ];
-
-    const fontSizes = [
-        { name: "9", value: "9px" },
-        { name: "10", value: "10px" },
-        { name: "11", value: "11px" },
-        { name: "12", value: "12px" },
-        { name: "13", value: "13px" },
-        { name: "14", value: "14px" },
-        { name: "15", value: "15px" },
-        { name: "16", value: "16px" },
-        { name: "17", value: "17px" },
-        { name: "18", value: "18px" },
-        { name: "19", value: "19px" },
-        { name: "20", value: "20px" },
-        { name: "21", value: "21px" },
-        { name: "22", value: "22px" },
-    ];
-
-    const fontColors = [
-        { value: "#333333", name: "Charcoal" },
-        { value: "#000080", name: "Navy Blue" },
-        { value: "#2F4F4F", name: "Dark Slate Gray" },
-        { value: "#6A0FAD", name: "Deep Purple" },
-        { value: "#DC143C", name: "Crimson" },
-        { value: "#008080", name: "Teal" },
-        { value: "#556B2F", name: "Dark Olive Green" },
-        { value: "#D2691E", name: "Chocolate" },
-        { value: "#6A5ACD", name: "Slate Blue" },
-        { value: "#B22222", name: "Firebrick" },
-    ];
-
-    const highlights = [
-        { value: "#87CEEB", name: "Sky Blue " },
-        { value: "#32CD32", name: "Lime Green " },
-        { value: "#FF7F50", name: "Coral " },
-        { value: "#FFFFE0", name: "Light Yellow " },
-        { value: "#E6E6FA", name: "Lavender " },
-        { value: "#FFDAB9", name: "Peach " },
-        { value: "#98FF98", name: "Mint Green " },
-        { value: "#FFB6C1", name: "Soft Pink " },
-        { value: "#FFA07A", name: "Light Salmon " },
-        { value: "#DAA520", name: "Goldenrod " },
-    ];
+    import { fontColors, fontFamilies, fontSizes, highlights } from "./constant";
+    import MinusIcon from "$components/assets/svg/editor/MinusIcon.svelte";
+    import PlusIcon from "$components/assets/svg/editor/PlusIcon.svelte";
 
     const { editor } = $props();
 
@@ -97,8 +20,51 @@
     let highlightDropdownState = $state(false);
     let fontColorDropdownState = $state(false);
 
+    let isActiveHeading1 = $derived(editor?.isActive("heading", { level: 1 }));
+    let isActiveHeading2 = $derived(editor?.isActive("heading", { level: 2 }));
+    let isActiveHeading3 = $derived(editor?.isActive("heading", { level: 3 }));
+    let isActiveHeading4 = $derived(editor?.isActive("heading", { level: 4 }));
+    let isActiveHeading5 = $derived(editor?.isActive("heading", { level: 5 }));
+    let isActiveHeading6 = $derived(editor?.isActive("heading", { level: 6 }));
+
     let selectedFamily = $derived(fontFamilies?.find(({ value }) => editor?.isActive("textStyle", { fontFamily: value })));
-    let selectedSize = $derived(fontSizes?.find(({ value }) => editor?.isActive("textStyle", { fontSize: value })));
+    let selectedSize = $state(null);
+
+    $effect(() => {
+        const fontsize = fontSizes?.find(({ value }) => editor?.isActive("textStyle", { fontSize: value }));
+        if (fontsize) {
+            selectedSize = fontsize;
+            return;
+        }
+        console.log(fontsize);
+        if (isActiveHeading1) {
+            selectedSize = fontSizes?.find(({ value }) => value === "30px");
+            return;
+        }
+        if (isActiveHeading2) {
+            selectedSize = fontSizes?.find(({ value }) => value === "24px");
+            return;
+        }
+        if (isActiveHeading3) {
+            selectedSize = fontSizes?.find(({ value }) => value === "20px");
+            return;
+        }
+        if (isActiveHeading4) {
+            selectedSize = fontSizes?.find(({ value }) => value === "18px");
+            return;
+        }
+        if (isActiveHeading5) {
+            selectedSize = fontSizes?.find(({ value }) => value === "16px");
+            return;
+        }
+        if (isActiveHeading6) {
+            selectedSize = fontSizes?.find(({ value }) => value === "14px");
+            return;
+        }
+        selectedSize = fontSizes?.find(({ value }) => value === "16px");
+        return;
+    });
+
     let selectedFontColor = $derived(fontColors?.find(({ value }) => editor?.isActive("textStyle", { color: value })));
     let selectedHighlight = $derived(highlights?.find(({ value }) => editor?.isActive("highlight", { color: value })));
 
@@ -107,9 +73,33 @@
         familyDropdownState = false;
     };
 
+    const fontValues = fontSizes.map(({ value }) => {
+        return value;
+    });
+
     const onSetSize = (value) => {
         editor?.chain()?.focus()?.setFontSize(value).run();
         sizeDropdownState = false;
+    };
+
+    const onMinusSize = () => {
+        if (!selectedSize) return;
+        const index = fontValues.indexOf(selectedSize.value);
+
+        if (index > 0) {
+            const value = fontSizes[index - 1].value;
+            editor?.chain()?.focus()?.setFontSize(value).run();
+        }
+    };
+
+    const onPlusSize = () => {
+        if (!selectedSize) return;
+        const index = fontValues.indexOf(selectedSize.value);
+
+        if (index < fontSizes.length - 1) {
+            const value = fontSizes[index + 1].value;
+            editor?.chain()?.focus()?.setFontSize(value).run();
+        }
     };
 
     const onSetFontColor = (value) => {
@@ -118,7 +108,9 @@
     };
 
     const onUnsetFontColor = () => {
+        console.log("Unset Font Color");
         editor?.chain()?.focus()?.unsetColor().run();
+
         fontColorDropdownState = false;
     };
 
@@ -127,7 +119,8 @@
         highlightDropdownState = false;
     };
 
-    const onUnsetHighlight = (value) => {
+    const onUnsetHighlight = () => {
+        console.log("Unset Highlight Color");
         editor?.chain()?.focus()?.unsetHighlight().run();
         highlightDropdownState = false;
     };
@@ -147,14 +140,14 @@
             </div>
         </SharedToolbarButton>
 
-        <Dropdown placement="bottom-start" class="w-44  bg-background-toolbar text-text-toolbar border border-border-toolbar rounded-sm" open={familyDropdownState}>
+        <Dropdown placement="bottom-start" class="w-44  bg-background-toolbar text-text-toolbar border border-border-toolbar rounded-sm" bind:open={familyDropdownState}>
             {#each fontFamilies as fontFamily}
                 <DropdownItem
                     class={cn(
                         "flex justify-start items-center gap-2 hover:bg-background-toolbar-hovered",
                         selectedFamily?.value === fontFamily.value ? "bg-background-toolbar-focused" : "bg-background-toolbar",
                     )}
-                    on:click={() => onSetFamily(fontFamily.value)}>
+                    onclick={() => onSetFamily(fontFamily.value)}>
                     <span class="flex-1">{fontFamily.name}</span>
                 </DropdownItem>
             {/each}
@@ -163,14 +156,25 @@
     <Tooltip>Font family</Tooltip>
 
     <div class="flex-0">
-        <SharedToolbarButton className="w-12 text-text-toolbar" actived={!!selectedSize}>
+        <div class="flex justify-start items-center gap-2">
+            <SharedToolbarButton onclick={onMinusSize}>
+                <MinusIcon width="14px" height="14px" />
+            </SharedToolbarButton>
+            {#if selectedSize}
+                <span class="flex-1 text-sm">{selectedSize?.name}</span>
+            {/if}
+            <SharedToolbarButton onclick={onPlusSize}>
+                <PlusIcon width="14px" height="14px" />
+            </SharedToolbarButton>
+        </div>
+        <!-- <SharedToolbarButton className="w-12 text-text-toolbar" actived={!!selectedSize}>
             <div class="w-full flex items-center justify-start gap-1">
                 <div class="flex-0">
                     <FontSizeIcon className="fill-text-toolbar" />
                 </div>
-                <!-- {#if selectedSize}
+                {#if selectedSize}
                     <span class="flex-1">{selectedSize?.name}</span>
-                {/if} -->
+                {/if}
                 <div class="flex-0">
                     <ChevronDownIcon className="fill-text-toolbar" />
                 </div>
@@ -183,11 +187,11 @@
                         "px-3 py-1 flex justify-center items-center gap-1 hover:bg-background-toolbar-hovered",
                         selectedSize?.value === fontsize.value ? "bg-background-toolbar-focused" : "bg-background-toolbar",
                     )}
-                    on:click={() => onSetSize(fontsize.value)}>
+                    onclick={() => onSetSize(fontsize.value)}>
                     <span>{fontsize.name}</span>
                 </DropdownItem>
             {/each}
-        </Dropdown>
+        </Dropdown> -->
     </div>
     <Tooltip>Font size</Tooltip>
 
@@ -210,15 +214,15 @@
                         "px-3 py-1 flex justify-start items-center gap-1 hover:bg-background-toolbar-hovered",
                         selectedFontColor?.value === fontColor.value ? "bg-background-toolbar-focused" : "bg-background-toolbar",
                     )}
-                    on:click={() => onSetFontColor(fontColor.value)}>
+                    onclick={() => onSetFontColor(fontColor.value)}>
                     <ColorItem width="20px" height="20px" color={fontColor.value} />
                 </DropdownItem>
             {/each}
             <DropdownDivider class="m-0 bg-border-toolbar" />
             <DropdownItem
                 class="px-3 py-1 flex justify-start items-center gap-1 hover:bg-background-toolbar-hovered"
-                disabled={!editor?.isActive("highlight")}
-                on:click={onUnsetFontColor}>
+                disabled={!editor?.isActive("textStyle")}
+                onclick={onUnsetFontColor}>
                 <StyleEraserIcon width="20px" height="20px" className="fill-text-toolbar" />
             </DropdownItem>
         </Dropdown>
@@ -244,7 +248,7 @@
                         "px-3 py-1 flex justify-start items-center gap-1 hover:bg-background-toolbar-hovered",
                         selectedHighlight?.value === highlight.value ? "bg-background-toolbar-focused" : "bg-background-toolbar",
                     )}
-                    on:click={() => onSetHighlight(highlight.value)}>
+                    onclick={() => onSetHighlight(highlight.value)}>
                     <ColorItem color={highlight.value} />
                 </DropdownItem>
             {/each}
@@ -252,7 +256,7 @@
             <DropdownItem
                 class="px-3 py-1 flex justify-start items-center gap-1 hover:bg-background-toolbar-hovered"
                 disabled={!editor?.isActive("highlight")}
-                on:click={() => onUnsetHighlight()}>
+                onclick={onUnsetHighlight}>
                 <StyleEraserIcon className="fill-text-toolbar" />
             </DropdownItem>
         </Dropdown>

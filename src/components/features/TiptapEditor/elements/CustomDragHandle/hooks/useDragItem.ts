@@ -15,12 +15,10 @@ export const useDragItem = (editor: Editor | null) => {
 
     const onSelect = () => {
         if (!editor || !currentNode) return;
-        console.log(currentNodePos);
+
         editor.chain().setMeta("hideDragHandle", true);
-        // editor.commands.setNodeSelection(currentNodePos);
-        // editor.commands.setTextSelection({ from: currentNodePos, to: currentNodePos + currentNode?.nodeSize || 0 });
-        editor.commands.setTextSelection({ from: 6, to: 12 });
-        console.log(currentNodePos, currentNode?.nodeSize);
+        editor.commands.focus();
+        editor.commands.setTextSelection({ from: currentNodePos, to: currentNodePos + currentNode?.nodeSize || 0 });
     };
 
     const onDuplicate = () => {
@@ -65,7 +63,7 @@ export const useDragItem = (editor: Editor | null) => {
         if (!editor || !currentNode) return;
 
         editor.chain().setMeta("hideDragHandle", true);
-        editor.chain().focus().setImageUpload().run();
+        editor.chain().focus().setImageUpload().setNodeSelection(currentNodePos).run();
     };
 
     return { currentNode, onNodeChange, onSelect, onDuplicate, onCopy, onDelete, onAddTable, onAddImage };

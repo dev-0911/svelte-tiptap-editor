@@ -20,11 +20,11 @@
 </script>
 
 <div id="toolbar" class={cn(className, "flex justify-center items-center")}>
-    <div class={cn("w-full p-2.5 flex flex-wrap justify-start items-center gap-2 bg-background-toolbar text-text-toolbar")}>
+    <div class={cn("w-full p-2.5 flex flex-wrap justify-center items-center gap-2 bg-background-toolbar text-text-toolbar")}>
         <AiTools {editor} {onReplace} {onInsertBelow} {onInsertAbove} />
         <Divider />
-        <CommandTools {editor} />
-        <Divider />
+        <!-- <CommandTools {editor} />
+        <Divider /> -->
         <ExportTools {editor} />
         <Divider />
         <FormattingTools {editor} />

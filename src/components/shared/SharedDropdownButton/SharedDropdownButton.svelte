@@ -2,10 +2,7 @@
     import cn from "classnames";
     import { Button } from "flowbite-svelte";
 
-    export let disabled;
-    export let className;
-    export let command;
-    export let onClick;
+    let { label, className, onClick, command, actived, disabled, children } = $props();
 </script>
 
 <Button
@@ -17,5 +14,7 @@
         "w-full px-2 py-1 flex justify-start items-center gap-2 rounded-sm",
         "bg-background hover:bg-background-hovered text-sm text-left text-black hover:drop-shadow-md",
     )}>
-    <slot />
+    {#if children}
+        {@render children()}
+    {/if}
 </Button>
