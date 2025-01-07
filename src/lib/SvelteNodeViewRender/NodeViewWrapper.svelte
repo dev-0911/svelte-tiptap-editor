@@ -1,8 +1,5 @@
 <script>
-    import { getContext, onMount, tick } from "svelte";
-
-    import { TIPTAP_NODE_VIEW } from "./context";
-    import { TiptapNodeViewContext } from "./types";
+    import { onMount, tick } from "svelte";
 
     const { as = "div", children, ...rest } = $props();
 

@@ -1,11 +1,159 @@
-.ProseMirror {
-  .collaboration-cursor {
-    &__caret {
-      @apply border-r border-l border-black pointer-events-none -ml-[1px] -mr-[1px] relative break-normal;
+.collaboration-cursor__caret {
+    border-left: 1px solid #0d0d0d;
+    border-right: 1px solid #0d0d0d;
+    margin-left: -1px;
+    margin-right: -1px;
+    pointer-events: none;
+    position: relative;
+    word-break: normal;
+}
+
+/* Render the username above the caret */
+.collaboration-cursor__label {
+    border-radius: 3px 3px 3px 0;
+    color: #0d0d0d;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 600;
+    left: -1px;
+    line-height: normal;
+    padding: 0.1rem 0.3rem;
+    position: absolute;
+    top: -1.4em;
+    user-select: none;
+    white-space: nowrap;
+}
+
+/* Thread mark */
+.tiptap-thread,
+.tiptap-thread * {
+    transition: all 0.2s cubic-bezier(0.65, 0.05, 0.36, 1);
+}
+
+.tiptap-thread[data-type="block"]:first-child {
+    margin-top: 0;
+}
+
+.tiptap-thread[data-type="block"] > :not(p, h1, h2, h3, h4, h5, h6, ul, li) {
+    outline-width: 2px;
+    outline-color: transparent;
+    outline-style: dashed;
+}
+
+/* .tiptap-thread[data-type="block"] {
+    &:first-child {
+        margin-top: 0;
     }
 
-    &__label {
-      @apply rounded rounded-tl-none text-black text-xs font-semibold -left-[1px] leading-none py-0.5 px-1.5 absolute -top-[1.4em] select-none whitespace-nowrap;
+    > :not(p, h1, h2, h3, h4, h5, h6, ul, li) {
+        outline-width: 2px;
+        outline-color: transparent;
+        outline-style: dashed;
     }
-  }
+} */
+
+[data-viewmode="open"] .tiptap .tiptap-thread[data-status-all="open"][data-type="block"] > :not(p, h1, h2, h3, h4, h5, h6, ul, li) {
+    background-color: var(--yellow);
+    outline-color: var(--yellow);
 }
+
+[data-viewmode="open"] .tiptap .tiptap-thread[data-status-all="open"][data-type="block"]:hover > :not(p, h1, h2, h3, h4, h5, h6, ul, li),
+[data-viewmode="open"] .tiptap .tiptap-thread[data-status-all="open"][data-type="block"][data-state="selected"] > :not(p, h1, h2, h3, h4, h5, h6, ul, li),
+[data-viewmode="open"] .tiptap .tiptap-thread[data-status-all="open"][data-type="block"][data-state="hovered"] > :not(p, h1, h2, h3, h4, h5, h6, ul, li) {
+    background-color: var(--yellow-contrast);
+    outline-color: var(--yellow-contrast);
+}
+
+[data-viewmode="open"] .tiptap .tiptap-thread[data-status-all="open"][data-type="inline"] {
+    border-bottom: 2px dashed var(--yellow-contrast);
+}
+
+[data-viewmode="open"] .tiptap .tiptap-thread[data-status-all="open"][data-type="inline"]:hover,
+[data-viewmode="open"] .tiptap .tiptap-thread[data-status-all="open"][data-type="inline"][data-state="selected"],
+[data-viewmode="open"] .tiptap .tiptap-thread[data-status-all="open"][data-type="inline"][data-state="hovered"] {
+    background-color: var(--yellow);
+}
+
+[data-viewmode="resolved"] .tiptap .tiptap-thread[data-status="closed"][data-type="block"] > :not(p, h1, h2, h3, h4, h5, h6, ul, li) {
+    background-color: var(--yellow);
+    outline-color: var(--yellow);
+}
+
+[data-viewmode="resolved"] .tiptap .tiptap-thread[data-status="closed"][data-type="block"]:hover > :not(p, h1, h2, h3, h4, h5, h6, ul, li),
+[data-viewmode="resolved"] .tiptap .tiptap-thread[data-status="closed"][data-type="block"][data-state="selected"] > :not(p, h1, h2, h3, h4, h5, h6, ul, li),
+[data-viewmode="resolved"] .tiptap .tiptap-thread[data-status="closed"][data-type="block"][data-state="hovered"] > :not(p, h1, h2, h3, h4, h5, h6, ul, li) {
+    background-color: var(--yellow-contrast);
+    outline-color: var(--yellow-contrast);
+}
+
+[data-viewmode="resolved"] .tiptap .tiptap-thread[data-status="closed"][data-type="inline"] {
+    border-bottom: 2px dashed var(--yellow-contrast);
+}
+
+[data-viewmode="resolved"] .tiptap .tiptap-thread[data-status="closed"][data-type="inline"]:hover,
+[data-viewmode="resolved"] .tiptap .tiptap-thread[data-status="closed"][data-type="inline"][data-state="selected"],
+[data-viewmode="resolved"] .tiptap .tiptap-thread[data-status="closed"][data-type="inline"][data-state="hovered"] {
+    background-color: var(--yellow);
+}
+
+/* 
+
+[data-viewmode="open"] .tiptap {
+    .tiptap-thread[data-status-all="open"] {
+        &[data-type="block"] {
+            > :not(p, h1, h2, h3, h4, h5, h6, ul, li) {
+                background-color: 'var(--yellow)';
+                outline-color: 'var(--yellow)';
+            }
+
+            &:hover,
+            &[data-state="selected"],
+            &[data-state="hovered"] {
+                > :not(p, h1, h2, h3, h4, h5, h6, ul, li) {
+                    background-color: 'var(--yellow-contrast)';
+                    outline-color: 'var(--yellow-contrast)';
+                }
+            }
+        }
+
+        &[data-type="inline"] {
+            border-bottom: 2px dashed 'var(--yellow-contrast)';
+
+            &:hover,
+            &[data-state="selected"],
+            &[data-state="hovered"] {
+                background-color: 'var(--yellow)';
+            }
+        }
+    }
+}
+
+[data-viewmode="resolved"] .tiptap {
+    .tiptap-thread[data-status="closed"] {
+        &[data-type="block"] {
+            > :not(p, h1, h2, h3, h4, h5, h6, ul, li) {
+                background-color: 'var(--yellow)';
+                outline-color: 'var(--yellow)';
+            }
+
+            &:hover,
+            &[data-state="selected"],
+            &[data-state="hovered"] {
+                > :not(p, h1, h2, h3, h4, h5, h6, ul, li) {
+                    background-color: 'var(--yellow-contrast)';
+                    outline-color: 'var(--yellow-contrast)';
+                }
+            }
+        }
+
+        &[data-type="inline"] {
+            border-bottom: 2px dashed 'var(--yellow-contrast)';
+
+            &:hover,
+            &[data-state="selected"],
+            &[data-state="hovered"] {
+                background-color: 'var(--yellow)';
+            }
+        }
+    }
+} */

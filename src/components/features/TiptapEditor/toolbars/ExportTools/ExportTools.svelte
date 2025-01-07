@@ -37,10 +37,8 @@
     }
 
     function ImportFromInput(e) {
-        console.log(e);
         const file = e.target.files[0];
 
-        console.log(file);
         fileInput.value = "";
 
         if (!file) {
@@ -55,7 +53,6 @@
             .import({
                 file,
                 onImport(context) {
-                    console.log(file, context.error);
                     if (context.error) {
                         error = context.error;
                         isLoading = false;
@@ -72,11 +69,11 @@
 
 <div class="flex justify-start items-center gap-1">
     <input type="file" accept=".docx" onchange={ImportFromInput} bind:this={fileInput} class="hidden" />
-    <SharedToolbarButton hint="Import from docx" onclick={ImportButtonClick} disabled={!editor}>
+    <SharedToolbarButton hint="Import DOCX" onclick={ImportButtonClick} disabled={!editor}>
         <CmdUploadIcon className={cn("fill-text-toolbar", !editor && "fill-text-toolbar-disabled")} />
     </SharedToolbarButton>
 
-    <SharedToolbarButton hint="Export as docx" onclick={ExportToWord} disabled={!editor}>
+    <SharedToolbarButton hint="Export as DOCX" onclick={ExportToWord} disabled={!editor}>
         <CmdDownloadIcon className={cn("fill-text-toolbar", !editor && "fill-text-toolbar-disabled")} />
     </SharedToolbarButton>
 </div>

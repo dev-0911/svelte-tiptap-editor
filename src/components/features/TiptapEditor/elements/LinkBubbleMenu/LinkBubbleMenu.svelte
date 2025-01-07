@@ -20,7 +20,6 @@
     $: isValidUrl = /^(\S+):(\/\/)?\S+$/.test(inputValue);
     $: isChecked = false;
 
-    console.log(url, sanitizedLink);
     onMount(() => {
         const plugin = BubbleMenuPlugin({
             pluginKey: "linkBubbleMenu",

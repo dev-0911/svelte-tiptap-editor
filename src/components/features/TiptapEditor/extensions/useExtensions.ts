@@ -1,5 +1,9 @@
-import Document from "@tiptap/extension-document";
+import { UniqueID } from "@tiptap-pro/extension-unique-id";
+import { Details } from "@tiptap-pro/extension-details";
+import { DetailsContent } from "@tiptap-pro/extension-details-content";
+import { DetailsSummary } from "@tiptap-pro/extension-details-summary";
 import Paragraph from "@tiptap/extension-paragraph";
+import { FocusClasses as Focus } from "@tiptap/extension-focus";
 import Text from "@tiptap/extension-text";
 import Underline from "@tiptap/extension-underline";
 import Subscript from "@tiptap/extension-subscript";
@@ -11,7 +15,7 @@ import Bold from "@tiptap/extension-bold";
 import Italic from "@tiptap/extension-italic";
 import Strike from "@tiptap/extension-strike";
 import History from "@tiptap/extension-history";
-import Heading from "@tiptap/extension-heading";
+import StarterKit from "@tiptap/starter-kit";
 import TextStyle from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
 import Highlight from "@tiptap/extension-highlight";
@@ -35,17 +39,33 @@ import ts from "highlight.js/lib/languages/typescript";
 import html from "highlight.js/lib/languages/xml";
 import { all, createLowlight } from "lowlight";
 import HardBreak from "@tiptap/extension-hard-break";
-import HorizontalRule from "@tiptap/extension-horizontal-rule";
-import { Table, TableCell, TableHeader, TableRow } from "./Table";
+import { Placeholder } from "@tiptap/extension-placeholder";
+
+import { BlockquoteFigure } from "./BlockquoteFigure";
+import { CodeBlock } from "./CodeBlock";
+import { Document } from "./Document";
+import { Figure } from "./Figure";
+import { Figcaption } from "./Figcaption";
+import { Heading } from "./Heading";
+import { HorizontalRule } from "./HorizontalRule";
 import { ImageBlock } from "./ImageBlock";
 import { ImageUpload } from "./ImageUpload";
+import { Link } from "./Link";
+import { Quote } from "./BlockquoteFigure/Quote";
+import { Selection } from "./Selection";
+import { Table, TableCell, TableHeader, TableRow } from "./Table";
+
 import Emoji from "@tiptap-pro/extension-emoji";
 import Mathematics, { defaultShouldRender } from "@tiptap-pro/extension-mathematics";
 import { uploadImage } from "$lib/api/upload";
-import { Link } from "./Link";
+import { isChangeOrigin } from "@tiptap/extension-collaboration";
 // import EmojiSuggestion from "./EmojiSuggestion";
+import { CommentsKit } from "@tiptap-pro/extension-comments";
+import { HocuspocusProvider, TiptapCollabProvider } from "@hocuspocus/provider";
+import { TrailingNode } from "./TrailingNode";
+import { Column, Columns } from "./MultiColumn";
 
-const useExtensions = (appId: string, token: string) => {
+const useExtensions = (provider: TiptapCollabProvider) => {
     const lowlight = createLowlight(all);
     lowlight.register("html", html);
     lowlight.register("css", css);
@@ -53,60 +73,52 @@ const useExtensions = (appId: string, token: string) => {
     lowlight.register("ts", ts);
 
     return [
-        History,
+        StarterKit.configure({
+            document: false,
+            dropcursor: false,
+            heading: false,
+            horizontalRule: false,
+            blockquote: false,
+            history: false,
+            codeBlock: false,
+        }),
         Document,
-        Paragraph,
-        Heading,
-        HardBreak,
-        HorizontalRule,
-        Text,
-        TextStyle,
-        Bold,
-        Italic,
-        Underline,
-        Strike,
-        FontSize,
-        FontFamily.configure({
-            types: ["textStyle"],
-        }),
-        Color,
-        Highlight.configure({ multicolor: true }),
-        CodeBlockLowlight.configure({
-            lowlight,
-            defaultLanguage: "plaintext",
-        }),
-        TextAlign.configure({
-            types: ["heading", "paragraph"],
-        }),
-        Subscript,
-        Superscript,
-        OrderedList,
-        BulletList,
-        ListItem,
+        Columns,
+        Column,
         TaskList,
-        TaskItem,
-        BubbleMenu.configure({
-            shouldShow: ({ editor, view, state, oldState, from, to }) => {
-                return editor.isActive("image") || editor.isActive("link");
+        TaskItem.configure({ nested: true }),
+        Selection,
+        Heading.configure({ levels: [1, 2, 3, 4, 5, 6] }),
+        HorizontalRule,
+        UniqueID.configure({
+            types: ["paragraph", "heading", "blockquote", "codeBlock", "table"],
+            filterTransaction: (transaction) => !isChangeOrigin(transaction),
+        }),
+        Details.configure({
+            persist: true,
+            HTMLAttributes: {
+                class: "details",
             },
         }),
+        DetailsContent,
+        DetailsSummary,
+        CodeBlock,
+        TextStyle,
+        FontSize,
+
+        FontFamily,
+        Color,
+        TrailingNode,
         Link.configure({
             openOnClick: false,
         }),
-
-        // CustomImage,
-        Typography,
-        Dropcursor,
-        CharacterCount.configure(),
-        Import.configure({
-            appId,
-            token,
+        Highlight.configure({ multicolor: true }),
+        Underline,
+        CharacterCount.configure({ limit: 50000 }),
+        ImageUpload.configure({
+            clientId: provider?.document?.clientID,
         }),
-        Export.configure({
-            appId,
-            token,
-        }),
-
+        ImageBlock,
         FileHandler.configure({
             allowedMimeTypes: ["image/png", "image/jpeg", "image/gif", "image/webp"],
             onDrop: (currentEditor, files, pos) => {
@@ -124,68 +136,37 @@ const useExtensions = (appId: string, token: string) => {
                 });
             },
         }),
-        // FileHandler.configure({
-        //     allowedMimeTypes: ["image/png", "image/jpeg", "image/gif", "image/webp"],
-        //     onDrop: (currentEditor, files, pos) => {
-        //         files.forEach((file) => {
-        //             const fileReader = new FileReader();
-
-        //             fileReader.readAsDataURL(file);
-        //             fileReader.onload = () => {
-        //                 currentEditor
-        //                     .chain()
-        //                     .insertContentAt(pos, {
-        //                         type: "image",
-        //                         attrs: {
-        //                             src: fileReader.result,
-        //                         },
-        //                     })
-        //                     .focus()
-        //                     .run();
-        //             };
-        //         });
-        //     },
-        //     onPaste: (currentEditor, files, htmlContent) => {
-        //         files.forEach((file) => {
-        //             if (htmlContent) {
-        //                 // if there is htmlContent, stop manual insertion & let other extensions handle insertion via inputRule
-        //                 // you could extract the pasted file from this url string and upload it to a server for example
-        //                 console.log(htmlContent); // eslint-disable-line no-console
-        //                 return false;
-        //             }
-
-        //             const fileReader = new FileReader();
-
-        //             fileReader.readAsDataURL(file);
-        //             fileReader.onload = () => {
-        //                 currentEditor
-        //                     .chain()
-        //                     .insertContentAt(currentEditor.state.selection.anchor, {
-        //                         type: "image",
-        //                         attrs: {
-        //                             src: fileReader.result,
-        //                         },
-        //                     })
-        //                     .focus()
-        //                     .run();
-        //             };
-        //         });
-        //     },
-        // }),
-        // Collaboration.configure({
-        //     document: doc, // Configure Y.Doc for collaboration
-        // }),
-        //AdvancedT extensions
-        Table,
-        TableCell,
-        TableHeader,
-        TableRow,
-        ImageBlock,
-        ImageUpload,
         Emoji.configure({
             enableEmoticons: true,
             // suggestion: emojiSuggestion,
         }),
+        TextAlign.extend({
+            addKeyboardShortcuts() {
+                return {};
+            },
+        }).configure({
+            types: ["heading", "paragraph"],
+        }),
+        Subscript,
+        Superscript,
+        Table,
+        TableCell,
+        TableHeader,
+        TableRow,
+        Typography,
+        Placeholder.configure({
+            includeChildren: true,
+            showOnlyCurrent: false,
+            placeholder: () => "",
+        }),
+        Focus,
+        Figcaption,
+        BlockquoteFigure,
+        Dropcursor.configure({
+            width: 2,
+            class: "ProseMirror-dropcursor border-black",
+        }),
+
         Mathematics.configure({
             shouldRender: (state, pos, node) => {
                 // this will disable rendering for headings & code blocks
