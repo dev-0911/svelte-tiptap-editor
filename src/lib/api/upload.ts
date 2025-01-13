@@ -23,7 +23,7 @@ export const uploadImage = async (file: File) => {
         console.log("File uploaded successfully:", cloudfrontLink);
     } catch (errPayload: any) {
         const error = errPayload?.response?.data?.error || "Something went wrong";
-        console.log(error);
+        console.log("error", error);
     }
     return null;
 };

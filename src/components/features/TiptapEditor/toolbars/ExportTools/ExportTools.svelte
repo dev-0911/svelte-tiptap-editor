@@ -20,7 +20,7 @@
                     if (context?.error) {
                         error = context?.error;
                         isLoading = false;
-                        console.log(error);
+                        console.log("error", error);
                         return;
                     }
                     context.download();

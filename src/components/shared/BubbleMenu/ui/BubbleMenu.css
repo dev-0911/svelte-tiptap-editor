@@ -1,0 +1,95 @@
+.tippy-box[data-theme~="bubble-menu"] {
+    padding: 4px;
+    background-color: var(--background-color-bubble-menu) !important;
+    border: 1px solid var(--border-color-bubble-menu);
+    border-radius: 8px;
+}
+
+.tippy-box[data-theme~="bubble-menu"] .tippy-content * {
+    font-size: 12px !important;
+    text-align: left !important;
+    color: var(--text-color-bubble-menu) !important;
+
+    .tiptap-bubble-menu-tooltip {
+        color: var(--text-color-bubble-menu-tooltip) !important;
+    }
+
+    span.tiptap-bubble-menu-label {
+        color: var(--text-color-bubble-menu-label) !important;
+    }
+
+    input.tiptap-bubble-menu-input {
+        width: 100%;
+        padding: 4px;
+        background-color: var(--background-color-bubble-menu-item-hovered);
+        color: var(--text-color-bubble-menu-item) !important;
+        border: 1px solid var(--border-color-bubble-menu-item);
+        border-radius: 4px;
+        &:focus {
+            border: 1px solid var(--border-color-bubble-menu-item-selected);
+        }
+    }
+
+    textarea.tiptap-bubble-menu-textarea {
+        width: 100%;
+        padding: 4px;
+        border: 1px solid transparent;
+        background-color: transparent;
+        color: var(--text-color-bubble-menu-item) !important;
+        resize: none;
+        &::placeholder {
+            color: var(--text-color-bubble-menu-item-placeholder) !important;
+        }
+        &:focus {
+            border: 1px solid transparent !important;
+        }
+    }
+
+    a.tiptap-bubble-menu-link {
+        font-size: 14px !important;
+        color: var(--text-color-bubble-menu-link) !important;
+        text-decoration-line: underline;
+        word-break: break-all;
+    }
+
+    button.tiptap-bubble-menu-button {
+        padding: 4px;
+
+        border-radius: 4px;
+        background-color: var(--background-color-bubble-menu-item);
+        color: var(--text-color-bubble-menu-item) !important;
+
+        &[data-size="sm"] {
+            font-size: 14px !important;
+            padding: 4px 8px;
+        }
+
+        svg {
+            fill: var(--text-color-bubble-menu-item);
+        }
+
+        &:hover {
+            background-color: var(--background-color-bubble-menu-item-hovered);
+            color: var(--text-color-bubble-menu-item-hovered) !important;
+            svg {
+                fill: var(--text-color-bubble-menu-item-hovered);
+            }
+        }
+
+        &.actived {
+            background-color: var(--background-color-bubble-menu-item-selected);
+            color: var(--text-color-bubble-menu-item-selected) !important;
+            svg {
+                fill: var(--text-color-bubble-menu-item-selected) !important;
+            }
+        }
+
+        &.disabled {
+            background-color: var(--background-color-bubble-menu-item-disabled);
+            color: var(--text-color-bubble-menu-item-disabled) !important;
+            svg {
+                fill: var(--text-color-bubble-menu-item-disabled);
+            }
+        }
+    }
+}

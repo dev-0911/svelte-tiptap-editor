@@ -66,5 +66,12 @@ export const useDragItem = (editor: Editor | null) => {
         editor.chain().focus().setImageUpload().setNodeSelection(currentNodePos).run();
     };
 
-    return { currentNode, onNodeChange, onSelect, onDuplicate, onCopy, onDelete, onAddTable, onAddImage };
+    const onAddMath = () => {
+        if (!editor || !currentNode) return;
+
+        editor.chain().setMeta("hideDragHandle", true);
+        editor.chain().focus().setMathBlock().setNodeSelection(currentNodePos).run();
+    };
+
+    return { currentNode, onNodeChange, onSelect, onDuplicate, onCopy, onDelete, onAddTable, onAddImage, onAddMath };
 };

@@ -36,7 +36,6 @@
             selectedSize = fontsize;
             return;
         }
-        console.log(fontsize);
         if (isActiveHeading1) {
             selectedSize = fontSizes?.find(({ value }) => value === "30px");
             return;

@@ -21,6 +21,7 @@
     import EmojiIcon from "$components/assets/svg/editor/EmojiIcon.svelte";
     import MinusIcon from "$components/assets/svg/editor/MinusIcon.svelte";
     import CommentIcon from "$components/assets/svg/editor/CommentIcon.svelte";
+    import InsertEx from "$components/assets/svg/editor/InsertEx.svelte";
 
     let { editor, onComments } = $props();
     let element;
@@ -36,7 +37,7 @@
         picker.togglePicker(trigger);
     }
 
-    const { onNodeChange, onSelect, onDuplicate, onCopy, onDelete, onAddTable, onAddImage } = useDragItem(editor);
+    const { onNodeChange, onSelect, onDuplicate, onCopy, onDelete, onAddTable, onAddImage, onAddMath } = useDragItem(editor);
 
     onMount(() => {
         const plugin = DragHandlePlugin({
@@ -112,6 +113,12 @@
         initState();
     };
 
+    const handleAddMath = () => {
+        onAddMath();
+        editor.commands.setMeta("lockDragHandle", false);
+        initState();
+    };
+
     const handleAddEmoji = () => {
         emojiState = true;
     };
@@ -145,6 +152,9 @@
                 </SharedBubbleMenuItem>
                 <SharedBubbleMenuItem onClick={handleAddImage} label="Images">
                     <InsertImageIcon />
+                </SharedBubbleMenuItem>
+                <SharedBubbleMenuItem onClick={handleAddMath} label="Math">
+                    <InsertEx />
                 </SharedBubbleMenuItem>
                 <SharedBubbleMenuItem onClick={handleAddEmoji} label="Emojis">
                     <EmojiIcon />
