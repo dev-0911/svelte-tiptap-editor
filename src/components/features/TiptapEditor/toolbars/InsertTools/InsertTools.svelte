@@ -1,40 +1,43 @@
 <script>
-    import { Button, Dropdown, Input, Toggle, Tooltip } from "flowbite-svelte";
     import CmdLinkIcon from "$components/assets/svg/editor/CmdLinkIcon.svelte";
+    import { Dropdown, DropdownButton, DropdownInput, DropdownLabel } from "$components/shared/Dropdown";
+    import { ToolbarButton } from "$components/shared/Toolbar";
+    import { Button, Tooltip } from "flowbite-svelte";
 
-    export let editor;
+    let { editor } = $props();
 
-    let inputValue;
-    $: isValidUrl = /^(\S+):(\/\/)?\S+$/.test(inputValue);
-    $: isChecked = false;
-    $: linkDropdownOpen = false;
-    const handleSetUrl = () => {
-        editor
-            .chain()
-            .focus()
-            .setLink({ href: inputValue, target: isChecked ? "_blank" : "" })
-            .run();
+    let inputValue = $state("");
+    let isValidUrl = $derived(/^(\S+):(\/\/)?\S+$/.test(inputValue));
+
+    let linkDropdownOpen = $state(false);
+
+    let canSetLink = $derived(editor?.can().chain().focus().setLink({ href: inputValue, target: "_blank" }).run());
+
+    const handleSetClick = () => {
+        editor.chain().focus().setLink({ href: inputValue, target: "_blank" }).run();
         linkDropdownOpen = false;
     };
 </script>
 
 <div class="flex justify-start items-center gap-1">
-    <Button class="p-1 bg-background-toolbar hover:bg-background-toolbar-hovered rounded-sm">
+    <ToolbarButton disabled={!canSetLink}>
         <CmdLinkIcon width="18px" height="18px" />
-    </Button>
+    </ToolbarButton>
 
-    <Dropdown offset="10" class="min-w-56 p-2 bg-background border border-border rounded-sm shadow-sm" bind:open={linkDropdownOpen}>
-        <div class="mb-2 flex justify-start items-center gap-2">
-            <Input name="link-url" type="url" placeholder="Enter URL" size="sm" bind:value={inputValue}>
-                <CmdLinkIcon slot="left" width="18px" height="18px" />
-            </Input>
+    <Dropdown placement="bottom-start" bind:open={linkDropdownOpen}>
+        <div class="min-w-60">
+            <div class="mb-2">
+                <DropdownLabel>Page or Url</DropdownLabel>
+            </div>
 
-            <Button class="bg-text" size="sm" disabled={!isValidUrl} on:click={handleSetUrl}>Set</Button>
+            <div class="mb-2">
+                <DropdownInput type="url" placeholder="Enter URL" size="sm" bind:value={inputValue} />
+            </div>
+
+            <div class="flex items-center justify-end">
+                <DropdownButton size="sm" disabled={!isValidUrl} onclick={handleSetClick}>Set</DropdownButton>
+            </div>
         </div>
-
-        <Toggle bind:checked={isChecked} size="small" color="teal" class="text-text-toolbar">
-            <svelte:fragment slot="offLabel">Open in new tab</svelte:fragment>
-        </Toggle>
     </Dropdown>
 </div>
 <Tooltip>Hyperlink</Tooltip>

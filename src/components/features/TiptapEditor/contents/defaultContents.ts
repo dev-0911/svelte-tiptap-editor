@@ -1,20 +1,5 @@
-export const defaultContent = `<h1>One morning, when Gregor Samsa woke from troubled 
-        dreams.</h1>
-      <ul>
-        <li>$\\sin(x)$</li>
-        <li>$\\cos(x)$</li>
-        <li>$\\tan(x)$</li>
-        <li>$\\log(x)$</li>
-        <li>$\\ln(x)$</li>
-        <li>$\\sqrt{x}$</li>
-        <li>$\\sum_{i=0}^n x_i$</li>
-        <li>$\\int_a^b x^2 dx$</li>
-        <li>$\\frac{1}{x}$</li>
-        <li>$\\binom{n}{k}$</li>
-        <li>$\\sqrt[n]{x}$</li>
-        <li>$\\left(\\frac{1}{x}\\right)$</li>
-        <li>$\\left\\{\\begin{matrix}x&\\text{if }x>0\\\\0&\\text{otherwise}\\end{matrix}\\right.$</li>
-      </ul>
+export const defaultContent = `
+<h1>One morning, when Gregor Samsa woke from troubled dreams.</h1>
         <h2>The bedding was hardly able to cover it.</h2>
         <p>One morning, when Gregor Samsa woke from troubled 
 dreams, he found himself transformed in his bed into 

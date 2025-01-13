@@ -64,6 +64,7 @@ import { CommentsKit } from "@tiptap-pro/extension-comments";
 import { HocuspocusProvider, TiptapCollabProvider } from "@hocuspocus/provider";
 import { TrailingNode } from "./TrailingNode";
 import { Column, Columns } from "./MultiColumn";
+import { MathBlock } from "./MathBlock";
 
 const useExtensions = (provider: TiptapCollabProvider) => {
     const lowlight = createLowlight(all);
@@ -115,10 +116,7 @@ const useExtensions = (provider: TiptapCollabProvider) => {
         Highlight.configure({ multicolor: true }),
         Underline,
         CharacterCount.configure({ limit: 50000 }),
-        ImageUpload.configure({
-            clientId: provider?.document?.clientID,
-        }),
-        ImageBlock,
+
         FileHandler.configure({
             allowedMimeTypes: ["image/png", "image/jpeg", "image/gif", "image/webp"],
             onDrop: (currentEditor, files, pos) => {
@@ -167,12 +165,18 @@ const useExtensions = (provider: TiptapCollabProvider) => {
             class: "ProseMirror-dropcursor border-black",
         }),
 
-        Mathematics.configure({
-            shouldRender: (state, pos, node) => {
-                // this will disable rendering for headings & code blocks
-                return defaultShouldRender(state, pos) && node.type.name !== "heading";
-            },
+        // Mathematics.configure({
+        //     shouldRender: (state, pos, node) => {
+        //         // this will disable rendering for headings & code blocks
+        //         console.log(node.type.name);
+        //         return defaultShouldRender(state, pos) && node.type.name !== "heading";
+        //     },
+        // }),
+        ImageUpload.configure({
+            clientId: provider?.document?.clientID,
         }),
+        ImageBlock,
+        MathBlock,
     ];
 };
 

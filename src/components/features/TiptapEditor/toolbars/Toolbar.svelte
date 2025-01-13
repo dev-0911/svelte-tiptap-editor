@@ -12,16 +12,21 @@
     import CodeTools from "./CodeTools/CodeTools.svelte";
     import InsertTools from "./InsertTools/InsertTools.svelte";
 
-    export let editor;
-    export let className;
-    export let onInsertBelow;
-    export let onInsertAbove;
-    export let onReplace;
+    const { editor, className, onInsertAbove, onInsertBelow, onReplace, aiData, aiState, aiResponse } = $props();
+
+    $effect(() => {
+        console.log("Toolbar", aiData);
+    });
+
+    $effect(() => {
+        console.log(aiState);
+        console.log(aiResponse);
+    });
 </script>
 
 <div id="toolbar" class={cn(className, "flex justify-center items-center")}>
     <div class={cn("w-full p-2.5 flex flex-wrap justify-center items-center gap-2 bg-background-toolbar text-text-toolbar")}>
-        <AiTools {editor} {onReplace} {onInsertBelow} {onInsertAbove} />
+        <AiTools {editor} {onReplace} {onInsertBelow} {onInsertAbove} {aiData} />
         <Divider />
         <!-- <CommandTools {editor} />
         <Divider /> -->

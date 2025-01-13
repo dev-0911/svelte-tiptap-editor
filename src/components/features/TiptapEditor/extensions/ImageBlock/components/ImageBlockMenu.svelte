@@ -1,21 +1,20 @@
 <script>
     import { v4 as uuid } from "uuid";
-    import { BubbleMenuPlugin } from "@tiptap/extension-bubble-menu";
     import { onMount } from "svelte";
-    import SharedBubbleMenu from "$components/shared/SharedBubbleMenu";
-    import SharedBubbleMenuButton from "$components/shared/SharedBubbleMenuButton";
-    import getRenderContainer from "$components/features/TiptapEditor/utils/getRenderContainer";
-    import { sticky } from "tippy.js";
-    import { isActive } from "@tiptap/core";
+    import { BubbleMenuPlugin } from "@tiptap/extension-bubble-menu";
+
+    import { Range } from "flowbite-svelte";
+
     import AlignLeftIcon from "$components/assets/svg/editor/AlignLeftIcon.svelte";
     import AlignRightIcon from "$components/assets/svg/editor/AlignRightIcon.svelte";
     import AlignCenterIcon from "$components/assets/svg/editor/AlignCenterIcon.svelte";
-    import { Range } from "flowbite-svelte";
-    import Divider from "$components/shared/Divider/Divider.svelte";
+    import { BubbleMenuButton, BubbleMenuDivider } from "$components/shared/BubbleMenu";
+    import { getRenderContainer } from "$components/shared/Svelte-tiptap";
 
-    const pluginKey = `imageBlockMenu-${uuid()}`;
     const { editor } = $props();
+
     let element;
+    const pluginKey = `imageBlockMenu-${uuid()}`;
 
     const getReferenceClientRect = () => {
         const renderContainer = getRenderContainer(editor, "node-imageBlock");
@@ -31,35 +30,33 @@
             element,
             tippyOptions: {
                 theme: "bubble-menu",
-                offset: [0, 8],
                 placement: "top",
-                arrow: true,
-                appendTo: () => {
-                    return document.body;
-                },
+                offset: [0, 8],
+                arrow: false,
                 popperOptions: {
                     modifiers: [{ name: "flip", enabled: false }],
                 },
+
+                appendTo: () => {
+                    return document.getElementById("PORTAL-ROOT");
+                },
                 getReferenceClientRect,
-                // onCreate: (instance) => {
-                //     tippyInstance = instance;
-                // },
-                // onHidden: () => {
-                //     showEdit = false;
-                // },
-                plugins: [sticky],
-                sticky: "popper",
             },
             shouldShow: ({ editor }) => {
-                const isActive = editor.isActive("imageBlock");
-
-                return isActive;
+                return editor.isActive("imageBlock");
             },
         });
 
         editor.registerPlugin(plugin);
 
         return () => editor.unregisterPlugin(pluginKey);
+    });
+
+    let initValue = $derived(parseInt(editor.getAttributes("imageBlock")?.width || 0));
+    let value = $state(undefined);
+
+    $effect(() => {
+        value = initValue;
     });
 
     const onAlignImageLeft = () => {
@@ -74,8 +71,6 @@
         editor.chain().focus(undefined, { scrollIntoView: false }).setImageBlockAlign("right").run();
     };
 
-    let value = $state(100);
-
     const onWidthChange = (e) => {
         const nextValue = parseInt(e.target.value);
         editor.chain().focus(undefined, { scrollIntoView: false }).setImageBlockWidth(nextValue).run();
@@ -88,17 +83,14 @@
 </script>
 
 <div bind:this={element}>
-    <SharedBubbleMenu>
+    <div class="flex justify-start items-center gap-2">
+        <BubbleMenuButton tooltip="Align image left" actived={isImageLeft} onclick={onAlignImageLeft}><AlignLeftIcon /></BubbleMenuButton>
+        <BubbleMenuButton tooltip="Align image center" actived={isImageCenter} onclick={onAlignImageCenter}><AlignCenterIcon /></BubbleMenuButton>
+        <BubbleMenuButton tooltip="Align image right" actived={isImageRight} onclick={onAlignImageRight}><AlignRightIcon /></BubbleMenuButton>
+        <BubbleMenuDivider />
         <div class="flex items-center gap-2">
-            <SharedBubbleMenuButton hint="Align image left" actived={true} onClick={onAlignImageLeft}><AlignLeftIcon /></SharedBubbleMenuButton>
-            <SharedBubbleMenuButton hint="Align image center" actived={isImageCenter} onClick={onAlignImageCenter}><AlignCenterIcon /></SharedBubbleMenuButton>
-            <SharedBubbleMenuButton hint="Align image right" actived={isImageRight} onClick={onAlignImageRight}><AlignRightIcon /></SharedBubbleMenuButton>
-            <Divider />
-            <div class="flex items-center gap-2">
-                <Range id="range-minmax" min="20" max="100" step="5" bind:value onchange={onWidthChange} />
-
-                <span class="text-xs font-semibold text-neutral-500 select-none">{value}%</span>
-            </div>
+            <Range size="sm" min="25" max="100" step="0" bind:value onchange={onWidthChange} />
+            <span>{initValue}%</span>
         </div>
-    </SharedBubbleMenu>
+    </div>
 </div>

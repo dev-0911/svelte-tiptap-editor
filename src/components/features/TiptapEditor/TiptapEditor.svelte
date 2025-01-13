@@ -6,10 +6,9 @@
     import Toolbar from "./toolbars/Toolbar.svelte";
     import { useTiptapEditor } from "./hooks";
     import CustomDragHandle from "./elements/CustomDragHandle";
-    import LinkBubbleMenu from "./elements/LinkBubbleMenu/LinkBubbleMenu.svelte";
+
     import TableColumn from "./extensions/Table/menus/TableColumn/TableColumn.svelte";
     import TableRow from "./extensions/Table/menus/TableRow/TableRow.svelte";
-    import ImageBlockMenu from "./extensions/ImageBlock/components/ImageBlockMenu.svelte";
     import { defaultContent } from "./contents/defaultContents";
     import Collaboration from "@tiptap/extension-collaboration";
     import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
@@ -18,10 +17,18 @@
     import Export from "@tiptap-pro/extension-export";
     import { Button, Modal, Radio, Textarea } from "flowbite-svelte";
     import ThreadList from "./threads/ThreadList/ThreadList.svelte";
+    import Ai from "@tiptap-pro/extension-ai";
+    import { useTiptapAi } from "./hooks/useTiptapAi.svelte";
+    import { ImageBlockMenu, LinkBubbleMenu, MathBlockMenu } from "./extensions";
 
     export let provider;
     export let ydoc;
+    export let convertAppId;
+    export let convertToken;
+    export let aiToken;
+    export let aiAppId;
 
+    console.log(aiAppId, aiToken);
     // Initial content for the editor
     let element;
     let editor;
@@ -60,9 +67,6 @@
         editorActions.replaceWithText(content);
     };
 
-    const convertAppId = import.meta.env.VITE_TIPTAP_CONVERT_APP_ID;
-    const convertAppToken = import.meta.env.VITE_TIPTAP_CONVERT_JWT_TOKEN;
-
     $: threads = [];
     $: showUnresolved = true;
     $: selectedThread = null;
@@ -70,6 +74,9 @@
     $: filteredThreads = threads.filter((t) => (showUnresolved ? !t.resolvedAt : !!t.resolvedAt));
 
     const extensions = useExtensions(provider);
+
+    const { aiData, aiResponse, aiState, onLoading, onChunk, onSuccess, onError } = useTiptapAi();
+
     onComponentMount(() => {
         editor = new Editor({
             element,
@@ -95,16 +102,29 @@
                         },
                     }),
                 convertAppId &&
-                    convertAppToken &&
+                    convertToken &&
                     Import.configure({
                         appId: convertAppId,
-                        token: convertAppToken,
+                        token: convertToken,
                     }),
                 convertAppId &&
-                    convertAppToken &&
+                    convertToken &&
                     Export.configure({
                         appId: convertAppId,
-                        token: convertAppToken,
+                        token: convertToken,
+                    }),
+                aiToken &&
+                    Ai.configure({
+                        // Your Tiptap Content AI app id
+                        appId: aiAppId,
+                        // This needs to be your generated JWT and MUST NOT be the OpenAI API key!
+                        token: aiToken,
+                        autocompletion: true,
+                        // … other options (see below)
+                        onLoading,
+                        onSuccess,
+                        onChunk,
+                        onError,
                     }),
             ],
 
@@ -160,6 +180,7 @@
             .setThread({ content: commentValue, commentData: { userName: "test" } })
             .run();
     };
+
     const onClickThread = (threadId) => {
         const isResolved = threads.find((t) => t.id === threadId)?.resolvedAt;
         if (!threadId || isResolved) {
@@ -198,12 +219,22 @@
 <div class="w-screen h-screen bg-background text-text" data-viewmode={showUnresolved ? "open" : "resolved"}>
     <div class="h-full flex flex-col border border-border-toolbar text-text overflow-hidden">
         {#if editor}
-            <Toolbar className="mx-auto flex-0 relative z-10 w-full bg-background-toolbar border-b border-b-border-toolbar" {editor} {onInsertBelow} {onInsertAbove} {onReplace} />
+            <Toolbar
+                className="mx-auto flex-0 relative z-10 w-full bg-background-toolbar border-b border-b-border-toolbar"
+                {editor}
+                {onInsertBelow}
+                {onInsertAbove}
+                {onReplace}
+                {aiData}
+                {aiResponse}
+                {aiState} />
             <CustomDragHandle {editor} {onComments} />
-            <LinkBubbleMenu {editor} />
             <TableColumn {editor} />
             <TableRow {editor} />
+
             <ImageBlockMenu {editor} />
+            <LinkBubbleMenu {editor} />
+            <MathBlockMenu {editor} />
         {/if}
 
         <div class="flex-1 relative z-0 w-full overflow-y-auto flex">
