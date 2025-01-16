@@ -1,1 +1,1 @@
-export { default } from "./ThreadComposer.svelte";
+export { default as ThreadComposer } from "./ThreadComposer.svelte";

@@ -2,15 +2,10 @@ import type { Editor } from "@tiptap/core";
 import type { TiptapCollabProvider } from "@hocuspocus/provider";
 import { hoverOffThread, hoverThread } from "@tiptap-pro/extension-comments";
 
-export const useThread = (editor: Editor, provider: TiptapCollabProvider) => {
-    const deleteThread = (threadId: string) => {
-        provider.deleteThread(threadId);
-        editor.commands.removeThread({ id: threadId });
-    };
-
+export const useThread = (provider: TiptapCollabProvider, editor: Editor) => {
     const onHoverThread = (threadId: number) => {
+        hoverThread(editor, [threadId]);
         console.log("Hover thread", threadId);
-        // hoverThread(editor, [threadId]);
     };
 
     const onLeaveThread = () => {
@@ -25,11 +20,17 @@ export const useThread = (editor: Editor, provider: TiptapCollabProvider) => {
     const unresolveThread = (threadId: string) => {
         editor.commands.unresolveThread({ id: threadId });
     };
+
+    const deleteThread = (threadId: string) => {
+        provider.deleteThread(threadId);
+        editor.commands.removeThread({ id: threadId });
+    };
+
     return {
+        deleteThread,
         resolveThread,
         unresolveThread,
         onHoverThread,
         onLeaveThread,
-        deleteThread,
     };
 };

@@ -5,6 +5,7 @@
     import { onMount } from "svelte";
 
     import { getAuthToken, getTiptapCollabApiToken, getTiptapCollabAppToken, getTiptapConvertToken, getTiptapOpenAiToken } from "$lib/api/auth";
+    import { userProfile } from "$lib/storage/userProfile";
 
     const collaborateDocPrefix = import.meta.env.VITE_TIPTAP_COLLABORATE_APP_ID;
 
@@ -17,7 +18,7 @@
     let collaborateToken;
     let aiToken;
     const yDoc = new YDoc();
-
+    let inited = false;
     onMount(async () => {
         let data = await getAuthToken("dusan", "#!123Dus456#");
         let convertData = await getTiptapConvertToken("dusan", "#!123Dus456#");
@@ -29,7 +30,7 @@
         aiToken = openAiData.access_token;
 
         console.log(collaborateToken);
-
+        inited = true;
         provider = new TiptapCollabProvider({
             name: `${collaborateDocPrefix}-${1234}`,
             appId: collaborateAppId ?? "",
@@ -37,6 +38,12 @@
 
             document: yDoc,
         });
+        $userProfile = {
+            id: "0123",
+            username: "dusan",
+            avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocKZ3R3iR4_n47UHqAcVe-LqVJjfXYAp13nbjI7xh7BWcz5wPHw=s100",
+            color: "#123456",
+        };
     });
 </script>
 

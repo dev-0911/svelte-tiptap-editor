@@ -11,6 +11,7 @@
     import ExportTools from "./ExportTools/ExportTools.svelte";
     import CodeTools from "./CodeTools/CodeTools.svelte";
     import InsertTools from "./InsertTools/InsertTools.svelte";
+    import CommentTools from "./CommentTools/CommentTools.svelte";
 
     const { editor, className, onInsertAbove, onInsertBelow, onReplace, aiData, aiState, aiResponse } = $props();
 
@@ -45,6 +46,8 @@
         <CodeTools {editor} />
         <Divider />
         <InsertTools {editor} />
+        <Divider />
+        <CommentTools {editor} />
         <!-- <FloatingMenu
             {editor}
             shouldShow={onShow}

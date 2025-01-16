@@ -1,1 +1,1 @@
-export { default } from "./ThreadList.svelte";
+export { default as ThreadList } from "./ThreadList.svelte";

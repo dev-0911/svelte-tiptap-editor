@@ -6,7 +6,7 @@
     const { actived, disabled, onclick, before, after, children, tooltip, className, size } = $props();
 </script>
 
-<button data-size={size} class={cn("dropdown-button flex justify-start items-center gap-2", actived && "actived", disabled && "disabled")} {onclick} {disabled}>
+<button data-size={size} class={cn(className, "dropdown-button flex justify-start items-center gap-2", actived && "actived", disabled && "disabled")} {onclick} {disabled}>
     {#if before}
         {before}
     {/if}

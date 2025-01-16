@@ -1,1 +1,1 @@
-export { default } from "./ThreadCard.svelte";
+export { default as ThreadCard } from "./ThreadCard.svelte";

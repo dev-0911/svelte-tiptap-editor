@@ -1,10 +1,11 @@
 <script>
+    import { userProfile } from "$lib/storage/userProfile";
     import { Button, Textarea } from "flowbite-svelte";
 
     const { threadId, provider } = $props();
     let comment = $state("");
 
-    // const user = useUser();
+    const { username, avatarUrl, color } = $userProfile;
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -18,7 +19,7 @@
                 content: comment,
                 createdAt: Date.now(),
                 updatedAt: Date.now(),
-                data: { userName: "user" },
+                data: { username, avatarUrl, color },
             });
 
             comment = "";
