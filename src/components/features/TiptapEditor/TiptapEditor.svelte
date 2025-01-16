@@ -20,6 +20,9 @@
     import Ai from "@tiptap-pro/extension-ai";
     import { useTiptapAi } from "./hooks/useTiptapAi.svelte";
     import { ImageBlockMenu, LinkBubbleMenu, MathBlockMenu } from "./extensions";
+    import { TiptapCommentsSideBar, TiptapCommentsLiveBar, TiptapPlugins } from "./layout";
+    import { tiptapStorage } from "$lib/storage/tiptapStorage";
+    import { userProfile } from "$lib/storage/userProfile";
 
     export let provider;
     export let ydoc;
@@ -28,8 +31,6 @@
     export let aiToken;
     export let aiAppId;
 
-    console.log(aiAppId, aiToken);
-    // Initial content for the editor
     let element;
     let editor;
 
@@ -68,22 +69,19 @@
     };
 
     $: threads = [];
-    $: showUnresolved = true;
     $: selectedThread = null;
-    $: selectedThreads = editor?.storage?.comments?.focusedThreads || [];
-    $: filteredThreads = threads.filter((t) => (showUnresolved ? !t.resolvedAt : !!t.resolvedAt));
 
     const extensions = useExtensions(provider);
 
     const { aiData, aiResponse, aiState, onLoading, onChunk, onSuccess, onError } = useTiptapAi();
-
+    const { username, color, avatarUrl } = $userProfile;
     onComponentMount(() => {
         editor = new Editor({
             element,
             extensions: [
                 ...extensions,
                 provider && ydoc && Collaboration.configure({ document: ydoc }),
-                provider && CollaborationCursor.configure({ provider, user: { name: "test", color: "#012345" } }),
+                provider && CollaborationCursor.configure({ provider, user: { name: username, color } }),
                 provider &&
                     CommentsKit.configure({
                         provider,
@@ -152,20 +150,21 @@
     });
 
     onComponentMount(() => {
-        const unsubscribe = subscribeToThreads({
-            provider,
-            callback: (currentThreads) => {
-                threads = currentThreads;
-            },
-        });
+        const updatePositions = () => {
+            const updatePositionEvent = new CustomEvent("updatePositionEvent");
+            document.dispatchEvent(updatePositionEvent);
+        };
+        updatePositions();
 
+        element.addEventListener("scroll", updatePositions);
         return () => {
-            unsubscribe();
+            element.removeEventListener("scroll", updatePositions);
         };
     });
 
     let commentModalState = false;
     let commentValue = "";
+
     const onComments = (callbackFn) => {
         commentModalState = true;
         callbackFn();
@@ -174,49 +173,11 @@
     const handleCreateComment = () => {
         console.log(commentValue);
         if (!commentValue || !editor) return;
-        editor
-            .chain()
-            .focus()
-            .setThread({ content: commentValue, commentData: { userName: "test" } })
-            .run();
-    };
-
-    const onClickThread = (threadId) => {
-        const isResolved = threads.find((t) => t.id === threadId)?.resolvedAt;
-        if (!threadId || isResolved) {
-            selectedThread = null;
-            editor.chain().unselectThread().run();
-            return;
-        }
-
-        selectedThread = threadId;
-        editor.chain().selectThread({ id: threadId, updateSelection: false }).run();
-        // editor.chain().selectThread({ id: threadId }).run();
-    };
-    const deleteThread = (threadId) => {
-        provider.deleteThread(threadId);
-        editor.commands.removeThread({ id: threadId });
-    };
-
-    const onHoverThread = (threadId) => {
-        console.log("Hover thread", threadId);
-        hoverThread(editor, [threadId]);
-    };
-
-    const onLeaveThread = () => {
-        hoverOffThread(editor);
-    };
-
-    const resolveThread = (threadId) => {
-        editor.commands.resolveThread({ id: threadId });
-    };
-
-    const unresolveThread = (threadId) => {
-        editor.commands.unresolveThread({ id: threadId });
+        editor.chain().focus().setThread({ content: commentValue, commentData: { username, avatarUrl, color } }).run();
     };
 </script>
 
-<div class="w-screen h-screen bg-background text-text" data-viewmode={showUnresolved ? "open" : "resolved"}>
+<div class="relative w-screen h-screen bg-background text-text" data-viewmode={$tiptapStorage.showResolved ? "resolved" : "open"}>
     <div class="h-full flex flex-col border border-border-toolbar text-text overflow-hidden">
         {#if editor}
             <Toolbar
@@ -229,43 +190,28 @@
                 {aiResponse}
                 {aiState} />
             <CustomDragHandle {editor} {onComments} />
-            <TableColumn {editor} />
-            <TableRow {editor} />
-
-            <ImageBlockMenu {editor} />
-            <LinkBubbleMenu {editor} />
-            <MathBlockMenu {editor} />
         {/if}
 
-        <div class="flex-1 relative z-0 w-full overflow-y-auto flex">
-            <div class="flex-1 w-full h-full scrollbar" bind:this={element} spellcheck="false"></div>
-
-            {#if threads.length !== 0}
-                <div class="flex-0 w-64 px-2 py-16">
-                    <h2 class="mb-2">Comments</h2>
-
-                    <div class="mb-2">
-                        <Radio name="thread-state" bind:group={showUnresolved} value={true} inline class="me-2">Open</Radio>
-                        <Radio name="thread-state" bind:group={showUnresolved} value={false} inline class="me-2">Resolved</Radio>
+        <div class="flex-1 relative z-0 w-full overflow-hidden">
+            <div class="w-full h-full flex">
+                <div class="relative flex-1 h-full overflow-y-auto scrollbar" bind:this={element} spellcheck="false"></div>
+                {#if editor && $tiptapStorage.showComments}
+                    <div class="flex-0 h-full overflow-y-auto scrollbar border-l border-solid border-l-border">
+                        <TiptapCommentsSideBar {provider} {editor} />
                     </div>
+                {/if}
+            </div>
 
-                    <ThreadList
-                        {provider}
-                        threads={filteredThreads}
-                        {selectedThread}
-                        {selectedThreads}
-                        {onClickThread}
-                        {deleteThread}
-                        {onHoverThread}
-                        {onLeaveThread}
-                        {resolveThread}
-                        {unresolveThread} />
-                </div>
+            {#if editor && !$tiptapStorage.showComments}
+                <TiptapCommentsLiveBar {provider} {editor} />
             {/if}
         </div>
-        <!-- <div class="flex-1 relative z-0 w-full px-10 py-5 overflow-y-auto scrollbar" bind:this={element} spellcheck="false"></div> -->
     </div>
 </div>
+
+{#if editor}
+    <TiptapPlugins {editor} />
+{/if}
 
 <Modal bind:open={commentModalState} size="xs" autoclose>
     <h3>Comments</h3>

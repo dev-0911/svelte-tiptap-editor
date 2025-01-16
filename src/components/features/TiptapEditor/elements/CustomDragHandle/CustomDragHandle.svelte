@@ -141,7 +141,13 @@
 
 <div bind:this={element} draggable="false" style="pointer-events: none;">
     <div class="flex justify-start items-center gap-1">
-        <button draggable="false" class="p-1 flex justify-center items-center bg-transparent hover:bg-background-hovered">
+        <button
+            draggable="false"
+            class="p-1 flex justify-center items-center bg-transparent hover:bg-background-hovered"
+            onClick={() => {
+                createNodeMenuOpen = !createNodeMenuOpen;
+                editor.commands.setMeta("lockDragHandle", editNodeMenuOpen || createNodeMenuOpen);
+            }}>
             <PlusIcon width="16px" height="16px" className="fill-text cursor-pointer" />
         </button>
 
@@ -171,7 +177,13 @@
             {/if}
         </SharedDropdown>
 
-        <button draggable="true" class="p-1 flex justify-center items-center bg-transparent hover:bg-background-hovered">
+        <button
+            draggable="true"
+            class="p-1 flex justify-center items-center bg-transparent hover:bg-background-hovered"
+            onClick={() => {
+                editNodeMenuOpen = !editNodeMenuOpen;
+                editor.commands.setMeta("lockDragHandle", editNodeMenuOpen || createNodeMenuOpen);
+            }}>
             <DragHandlerIcon className="fill-text cursor-grab" />
         </button>
 

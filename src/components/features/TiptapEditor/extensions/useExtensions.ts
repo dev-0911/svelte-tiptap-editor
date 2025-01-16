@@ -48,9 +48,9 @@ import { Figure } from "./Figure";
 import { Figcaption } from "./Figcaption";
 import { Heading } from "./Heading";
 import { HorizontalRule } from "./HorizontalRule";
-import { ImageBlock } from "./ImageBlock";
+
 import { ImageUpload } from "./ImageUpload";
-import { Link } from "./Link";
+
 import { Quote } from "./BlockquoteFigure/Quote";
 import { Selection } from "./Selection";
 import { Table, TableCell, TableHeader, TableRow } from "./Table";
@@ -64,7 +64,7 @@ import { CommentsKit } from "@tiptap-pro/extension-comments";
 import { HocuspocusProvider, TiptapCollabProvider } from "@hocuspocus/provider";
 import { TrailingNode } from "./TrailingNode";
 import { Column, Columns } from "./MultiColumn";
-import { MathBlock } from "./MathBlock";
+import { ImageBlock, Link, MathBlock } from ".";
 
 const useExtensions = (provider: TiptapCollabProvider) => {
     const lowlight = createLowlight(all);

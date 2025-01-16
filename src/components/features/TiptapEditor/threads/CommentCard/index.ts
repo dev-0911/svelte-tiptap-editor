@@ -1,1 +1,1 @@
-export { default } from "./CommentCard.svelte";
+export { default as CommentCard } from "./CommentCard.svelte";

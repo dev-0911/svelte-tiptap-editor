@@ -32,6 +32,7 @@
 
 <div
     class={cn(className, "text-xs")}
+    data-node-id={thread.id}
     onmouseenter={() => onHoverThread(thread.id)}
     onmouseleave={() => onLeaveThread()}
     tabindex={0}
